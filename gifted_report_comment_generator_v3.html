@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>資優班成績單質性評語產生器 v6</title>
+    <title>資優班成績單質性評語產生器 v7</title>
     <style>
         :root {
             --primary-color: #5b7065;
@@ -257,19 +257,25 @@
 
 <div class="container">
     <header>
-        <h1>資優班成績單評語優化產生器 v6 (究極字詞不重複版) 🌸</h1>
-        <p>已完全移除 Prompt 欄位！專注提供四套全異詞組描述，支援多層次文學筆調無限疊加</p>
+        <h1>資優班成績單評語優化產生器 v7 (特徵系統同步連動版) 🌸</h1>
+        <p>全新加入「自訂筆調特徵欄位」，後台分析按鈕全面修復，與生成描述達到系統級深度聯連動！</p>
     </header>
 
     <div class="card">
-        <h2><span class="step-num">1</span>步驟一：歷史評語風格庫分析</h2>
+        <h2><span class="step-num">1</span>步驟一：歷史評語分析與筆調風格設定</h2>
+        
+        <div class="form-group" style="background-color: #fcfdfe; border: 1px dashed var(--secondary-color); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <label for="currentStyleInput" style="color: #924040; font-size: 15px;">✍️ 目前啟用的筆調特徵風格（⚠️ 此欄位直接連結影響下方評語產出）：</label>
+            <input type="text" id="currentStyleInput" placeholder="例如：筆調自然溫暖、側重微觀覺察、融入情意韌性（可自行輸入修改，或由下方按鈕自動提取）" value="筆調自然溫暖、側重微觀覺察、融入情意韌性">
+        </div>
+
         <div class="form-group">
-            <label for="historyInput">貼上您過去親自撰寫的評語範例（可持續累積）：</label>
-            <textarea id="historyInput" placeholder="在此貼上您以前寫的個別化評語，系統會自動在本地瀏覽器後台分析並留存您的語調特徵..."></textarea>
-            <button class="btn btn-secondary" style="width: auto; padding: 6px 16px; font-size: 13px;" onclick="analyzeAndLogStyle()">📥 分析語調風格並記錄至後台</button>
+            <label for="historyInput">從過去親自撰寫的評語片段中自動提取風格（選填）：</label>
+            <textarea id="historyInput" placeholder="在此貼上您以前寫的個別化評語，系統會自動分析出筆調特色，並直接覆蓋更新到上方的特徵欄位中..."></textarea>
+            <button class="btn btn-secondary" style="width: auto; padding: 6px 16px; font-size: 13px;" onclick="analyzeAndLogStyle()">📥 執行風格分析並同步至特徵欄位</button>
         </div>
         <div>
-            <label>📊 本地後台已儲存的筆調特徵：</label>
+            <label>📊 本地後台分析歷史紀錄：</label>
             <div style="overflow-x: auto;">
                 <table class="log-table" id="logTable">
                     <thead>
@@ -331,10 +337,10 @@
             <div class="trait-category">
                 <div class="category-title">🤝 領導力、情意特質與同儕互動</div>
                 <div class="characteristic-tags">
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc" value="soc_review"> 💬 善於建設性互評</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc" value="soc_leader"> 👑 小組正向引領領導</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc" value="soc_empathy"> 🌱 具高度人文生態同理</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc" value="soc_alone"> 👥 小組協作磨合期</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_review"> 💬 善於建設性互評</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_leader"> 👑 小組正向引領領導</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_empathy"> 🌱 具高度人文生態同理</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_alone"> 👥 小組協作磨合期</label>
                 </div>
             </div>
         </div>
@@ -349,7 +355,7 @@
     </div>
 
     <div class="card result-section" id="outputCard" style="display: none;">
-        <h2><span>🌸 專屬客製化質性評語庫（已完全排除生硬死板對仗）</span>
+        <h2><span>🌸 專屬客製化質性評語庫（依據自訂筆調特徵精準揉合）</span>
             <button class="copy-btn" onclick="copyText('commentBox')">複製全部文字</button>
         </h2>
         <div class="result-box" id="commentBox"></div>
@@ -357,9 +363,8 @@
 </div>
 
 <script>
-    // 四套完全不重複的頂級詞庫系統
+    // 四套字詞完全不重複的頂級詞庫系統
     const DICTIONARY = {
-        // --- 意境一：清透質樸體 ---
         set1: {
             open: "本學期置身於探究課堂，[NAME]展露出相當清亮且純粹的學習質地。",
             cog_observe: "其心思極其靈敏，總能敏銳捕捉到課堂上微小的變因脈絡",
@@ -376,12 +381,10 @@
             soc_review: "難得的是，在共學社群中他極樂意傾聽，常能用溫潤且具建設性的視角給予夥伴中肯的回饋",
             soc_leader: "在團隊共作中具備極佳的凝聚力，擅長梳理各方歧見並穩健推進小組既定步調",
             soc_empathy: "感官敏銳且情感細緻，對周遭生態環境或人文脈絡抱持著深刻的共情與自省力",
-            soc_alone: "不過現階段在協作時他仍偏好獨立揮灑，溝通磨合的默契上仍需多投入一些時間引導",
-            
+            soc_alone: "不過現階段在協作時他仍偏好獨立揮灑，溝通磨合的默刻上仍需多投入一些時間引導",
             close: "期待未來他能持續擁抱這份對萬物的好奇心，在探究的長路上踏實邁進。"
         },
         
-        // --- 意境二：內斂微觀體 ---
         set2: {
             open: "隨著本季主題研究的步步深化，[NAME]在心智運作上的抽長有目共睹。",
             cog_observe: "其視角極為細密，能自發覺察旁人往往忽略的幽微細節與底層質地",
@@ -392,4 +395,199 @@
             
             adj_perfect: "只是對自我要求甚高，當進度或結果出現波動，神情間難免泛起一絲挫折與緊繃",
             adj_write: "手腳俐落、實踐力極強，惟期末將思考歷程轉化為文字時，收尾語調顯得稍有力道未竟之感",
-            adj_detail: "沉浸於專題時極具匠心，但有時會過於膠著於局部
+            adj_detail: "沉浸於專題時極具匠心，但有時會過於膠著於局部細項，需要適度抽離以俯瞰大局",
+            adj_bored: "當課堂任務偏向常態常規時，其內在動機易出現隱性渙散，高度挑戰反而更能激發其韌性",
+            
+            soc_review: "於同儕互動中，他能以極具包容力的口吻，為同伴的產出注入溫暖而深刻的修正觀點",
+            soc_leader: "展露出沉穩的隱性領導特質，總能有效整合分歧的聲音，帶領組員克服卡關的困境",
+            soc_empathy: "心思澄澈且關懷細膩，對於社會群落或自然環境的變遷，有著超乎年齡的反思情懷",
+            soc_alone: "但在小組分工的起步階段，他往往習於單兵作戰，與團隊步調同步的耐性仍有待厚植",
+            close: "願他保有這份沉靜的探索熱忱，在熱愛的學術原野中，綻放屬於自己的獨特光芒。"
+        },
+
+        set3: {
+            open: "縱觀這一季的探究歷程，[NAME]展現出一個成熟學習者極具厚度的思維風貌。",
+            cog_observe: "他擁有極佳的敏銳觸角，擅長在紛繁的現象中理出清晰的觀察紋理",
+            cog_research: "具備獨立破局的特質，習於透過多元的數位路徑與文獻比對來尋求答案",
+            cog_connect: "縱向思維與橫向整合能力皆強，善於編織跨領域的認知地圖",
+            cog_desire: "求知核心被強烈自發動機驅策，對於特定議題的鑽研深度往往超越常人",
+            cog_creative: "在團隊激盪中扮演關鍵的點子泉源，其切入點往往帶著精采的批判性思維",
+            
+            adj_perfect: "不過這份極致的追求，有時也成為內心無形的制約，當實作卡關時較容易流露急躁",
+            adj_write: "課堂展現了極高的執行效率，可惜在最後將脈絡訴諸筆墨時，結構的推演略顯匆忙",
+            adj_detail: "對細微處的講究令人讚賞，但有時因過度聚焦於旁枝末節，反而模糊了核心主軸",
+            adj_bored: "他的心智需要高強度的養分餵養，一旦任務缺乏台階與挑戰，神情便流露隱性的神遊",
+            
+            soc_review: "在互評環節中，他總能不吝分享智慧，用寬厚且具啟發性的評語點亮同儕的盲區",
+            soc_leader: "在群體中能發揮正向的號召力，以清晰的邏輯和體貼的協調力，穩健引領同伴前行",
+            soc_empathy: "情意感官飽滿，對自然萬物與社區歷史帶著一份天然的體恤，內省力格外深刻",
+            soc_alone: "只是目前與他人對話磨合時較傾向主導或抽離，如何融入群體、步調一致是接下來的功課",
+            close: "期許他帶著這雙豐沛的羽翼，在未來的知識星空裡，飛得更加自在且高遠。"
+        },
+
+        set4: {
+            open: "這學期在專題教室裡，[NAME]所散發的知性光彩與探索廣度，令人印象深刻。",
+            cog_observe: "他具備超齡的覺察力，總能在尋常的文本中捕捉到深刻的探究線索",
+            cog_research: "面對難題不輕言放棄，習慣調動各種身邊資源與文獻，孤身一人也能穩健解謎",
+            cog_connect: "概念編織功力紮實，能順暢將多學科的知識脈絡融會貫通並靈活應用",
+            cog_desire: "內在對知識的渴望純粹且強烈，一接觸到熱愛的題目便展現極高的意志力",
+            cog_creative: "想像力如泉湧且不受傳統羈絆，丟出來的構想往往能引導全班拓寬思維廣度",
+            
+            adj_perfect: "只是情意上略帶完美主義的影子，遇上不順遂的實驗節奏，內心難免有些許起伏",
+            adj_write: "實作進度永遠超前，但期末成果報告的文字鋪陳與收尾力度，仍有些許提煉的空間",
+            adj_detail: "極具鑽研精神，但也偶爾會陷入特定細部的泥淖，需要旁人適時拉高其視野",
+            adj_bored: "對常規的抄寫或講授反應較平淡，唯有在高度考驗腦力的複雜情境中，才能全然喚醒其專注力",
+            
+            soc_review: "與夥伴互動時極具氣度，樂於用溫暖的對話與極具洞察力的觀點，共創課堂討論深度",
+            soc_leader: "深具領導風範，能悉心傾聽並接納組員的多樣聲音，使小組探究任務得以精采呈現",
+            soc_empathy: "心思柔軟且生命情懷濃郁，面對生態永續或文史變遷等議題，能展現深刻的人文反思",
+            soc_alone: "不過有時他較習慣關在自己的世界裡耕耘，如何敞開心胸進行更深度的團隊協作，仍需多加提振",
+            close: "盼望他持續淬鍊這份探究底蘊，在漫長的人生學習地圖中，沉穩而自信地閃耀。"
+        }
+    };
+
+    let clickCount = 0;
+
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.name === 'traits') {
+            const label = e.target.closest('.tag-checkbox');
+            if (label) {
+                if (e.target.checked) label.classList.add('active');
+                else label.classList.remove('active');
+            }
+        }
+    });
+
+    window.onload = function() { renderLogTable(); };
+
+    // 🔥 全面修復分析按鈕：提取特徵並同步至上方特徵輸入框
+    function analyzeAndLogStyle() {
+        const text = document.getElementById('historyInput').value.trim();
+        if (!text) { alert('請先輸入過去寫過的評語片段！'); return; }
+
+        let features = ["筆調自然溫暖"];
+        if (text.includes("觀察") || text.includes("細") || text.includes("捕捉")) features.push("側重微觀覺察");
+        if (text.includes("急") || text.includes("挫折") || text.includes("完美") || text.includes("心態")) features.push("融入情意韌性");
+        if (text.includes("小組") || text.includes("同儕") || text.includes("互動") || text.includes("凝聚")) features.push("著眼共學群體");
+
+        const finalStyleString = features.join('、');
+
+        // 1. 同步覆蓋上方的特徵輸入框
+        document.getElementById('currentStyleInput').value = finalStyleString;
+
+        // 2. 寫入本地歷史紀錄
+        const newLog = {
+            time: new Date().toLocaleTimeString(),
+            snippet: text.substring(0, 45) + (text.length > 45 ? "..." : ""),
+            feature: finalStyleString
+        };
+
+        let currentLogs = JSON.parse(localStorage.getItem('styleLogs') || '[]');
+        currentLogs.unshift(newLog);
+        localStorage.setItem('styleLogs', JSON.stringify(currentLogs));
+        
+        renderLogTable();
+        document.getElementById('historyInput').value = "";
+        alert('✨ 風格提取成功！已自動同步連動至上方的「筆調特徵風格欄位」！');
+    }
+
+    function renderLogTable() {
+        const tbody = document.getElementById('logTableBody');
+        if (!tbody) return;
+        let logs = JSON.parse(localStorage.getItem('styleLogs') || '[]');
+        if (logs.length === 0) {
+            logs = [{ time: "系統預置", snippet: "範例：展現極強觀察力...面對數據不符預期時顯得有些急躁...", feature: "筆調自然溫暖、側重微觀覺察、融入情意韌性" }];
+            localStorage.setItem('styleLogs', JSON.stringify(logs));
+        }
+        tbody.innerHTML = "";
+        logs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${log.time}</td><td style="color:#555;">${log.snippet}</td><td style="font-weight:bold; color:var(--primary-color);">${log.feature}</td>`;
+            tbody.appendChild(row);
+        });
+    }
+
+    // 🔥 系統性連動生成邏輯
+    function generateCommentSystem(isAppendMode) {
+        const name = document.getElementById('studName').value.trim() || '該生';
+        const custom = document.getElementById('customInput').value.trim();
+        
+        // 抓取自訂風格欄位的內容進行系統性融入
+        const userStyle = document.getElementById('currentStyleInput').value.trim() || "筆調自然溫暖";
+
+        if (!isAppendMode) {
+            clickCount = 1;
+            document.getElementById('commentBox').innerText = "";
+        } else {
+            clickCount++;
+            if (clickCount > 4) {
+                alert('已為您疊加至第四套極致意境！如需重新洗牌，請點擊第一個按鈕。');
+                clickCount = 4;
+                return;
+            }
+        }
+
+        const currentSet = DICTIONARY['set' + clickCount];
+        let pieces = [];
+
+        // 1. 根據使用者輸入的風格，動態修飾開頭修辭（系統性連動機制）
+        let dynamicOpen = currentSet.open.replace(/\[NAME\]/g, name);
+        if (userStyle.includes("微觀") || userStyle.includes("觀察")) {
+            dynamicOpen = dynamicOpen.replace("學習質地", "且絲絲入扣的微觀學習質地");
+        }
+        if (userStyle.includes("溫暖") || userStyle.includes("情意")) {
+            dynamicOpen = "🌸 " + dynamicOpen;
+        }
+        pieces.push(dynamicOpen);
+
+        // 2. 勾選特質注入
+        document.querySelectorAll('input[name="traits"]:checked').forEach(cb => {
+            const key = cb.value;
+            if (currentSet[key]) {
+                pieces.push(currentSet[key]);
+            }
+        });
+
+        // 3. 具體軼事融入
+        if (custom) {
+            if (clickCount === 1) pieces.push(`這份特質在日常課堂中展露無遺，特別是他在「${custom}」的過程中，更讓老師看到他特定且深刻的思考切入點。`);
+            if (clickCount === 2) pieces.push(`回溯其具體足跡，尤其是當他全心投入於「${custom}」時，那種沉浸且熱切的眼神令人印象深刻。`);
+            if (clickCount === 3) pieces.push(`這番獨特視角，在課堂歷程提及「${custom}」那一刻格外清晰，展現了極佳的心智韌性。`);
+            if (clickCount === 4) pieces.push(`尤其是在深入探討「${custom}」這段歷程時，其細緻的處理手法更凸顯了超齡的研究底蘊。`);
+        }
+
+        // 4. 結尾：將使用者的風格關鍵字直接內嵌整合至文末（深度連結）
+        let dynamicClose = currentSet.close;
+        if (userStyle) {
+            dynamicClose = dynamicClose.replace("踏實邁進", `帶著「${userStyle}」的獨特步調踏實邁進`);
+            dynamicClose = dynamicClose.replace("安穩前行", `秉持「${userStyle}」的初衷安穩前行`);
+        }
+        pieces.push(dynamicClose);
+
+        // 標點與換行編排
+        let paragraph = pieces.join('，') + '。';
+        paragraph = paragraph.replace(/。，/g, '。')
+                             .replace(/，，/g, '，')
+                             .replace(/，。/g, '。')
+                             .replace(/。/g, '。  \n\n');
+
+        const box = document.getElementById('commentBox');
+        if (!isAppendMode) {
+            box.innerText = paragraph;
+        } else {
+            box.innerText = box.innerText + "\n\n" + paragraph;
+        }
+
+        document.getElementById('outputCard').style.display = 'block';
+        document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyText(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => { alert('已成功複製完整評語到剪貼簿！'); })
+        .catch(() => { alert('複製失敗，請手動選取文字。'); });
+    }
+</script>
+
+</body>
+</html>
