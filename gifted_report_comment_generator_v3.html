@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資優班成績單質性評語產生器 v3</title>
+    <style>
+        :root {
+            --primary-color: #5b7065;
+            --secondary-color: #c9d6cd;
+            --accent-color: #df9f9f;
+            --bg-color: #f7f9f8;
+            --card-bg: #ffffff;
+            --text-color: #3a4740;
+            --border-color: #e2e8e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary-color), #7a8f83);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hint-text {
+            font-size: 12px;
+            color: #8a9a90;
+            margin-top: 4px;
+            font-weight: normal;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #4a5750;
+        }
+
+        .trait-category {
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #e2e8e5;
+            padding-bottom: 12px;
+        }
+        .trait-category:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .category-title {
+            font-size: 13px;
+            color: #72857a;
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 110px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fafbfa;
+            color: var(--text-color);
+            font-size: 14px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(91, 112, 101, 0.1);
+        }
+
+        .input-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .input-cell {
+            display: table-cell;
+            width: 50%;
+            padding-right: 10px;
+        }
+        .input-cell:last-child {
+            padding-right: 0;
+            padding-left: 10px;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fafbfa;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .characteristic-tags {
+            margin-top: 5px;
+        }
+
+        .tag-checkbox {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 8px;
+            font-size: 12.5px;
+            background: #f0f2f1;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tag-checkbox input {
+            margin-right: 4px;
+        }
+
+        .tag-checkbox.active {
+            background-color: #e3ece8;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background-color: #4a5c53;
+        }
+
+        .btn-secondary {
+            background-color: #7a8f83;
+            margin-top: 8px;
+        }
+
+        .result-section {
+            background-color: #f0f4f2;
+            border: 1px dashed var(--primary-color);
+        }
+
+        .result-box {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+            font-size: 14px;
+            white-space: pre-wrap;
+            color: #2e3b33;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .log-table th, .log-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .log-table th {
+            background-color: #eef2f0;
+            color: var(--primary-color);
+        }
+
+        .copy-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .clear { clear: both; }
+
+        .step-num {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>資優班成績單評語優化產生器 v3 (全面擴充資優特質庫) 🌸</h1>
+        <p>完整融入國小資優生四大維度樣貌，完美對接獨立研究與探究社群課堂現場</p>
+    </header>
+
+    <!-- 步驟一 -->
+    <div class="card">
+        <h2>
+            <span><span class="step-num">1</span>步驟一：歷史評語風格庫分析</span>
+        </h2>
+        <div class="form-group">
+            <label for="historyInput">貼上您過去親自撰寫的評語範例（可持續累積）：</label>
+            <textarea id="historyInput" placeholder="在此貼上您以前寫的個別化評語，系統會自動在本地瀏覽器後台分析並留存您的語調特徵..."></textarea>
+            <button class="btn btn-secondary" style="width: auto; padding: 6px 16px; font-size: 13px;" onclick="analyzeAndLogStyle()">📥 分析語調風格並記錄至後台</button>
+        </div>
+
+        <div>
+            <label>📊 本地後台已儲存的筆調特徵：</label>
+            <div style="overflow-x: auto;">
+                <table class="log-table" id="logTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">分析時間</th>
+                            <th style="width: 55%;">原評語片段摘要</th>
+                            <th style="width: 30%;">系統提取之筆調特徵</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 步驟二 -->
+    <div class="card">
+        <h2>
+            <span><span class="step-num">2</span>步驟二：內建 PROMPT 限制與大綱設定</span>
+        </h2>
+        <div class="form-group">
+            <label>📋 內建寫作核心限制（預設已啟用）：</label>
+            <div class="characteristic-tags">
+                <label class="tag-checkbox active"><input type="checkbox" id="p_style" checked value="避免公式化與刻板對仗（如：絕對禁止出現「不僅...更是...」、「不僅在...更在...」等生硬句型）。"> ❌ 禁用生硬公式對仗</label>
+                <label class="tag-checkbox active"><input type="checkbox" id="p_tone" checked value="文字語調需流暢自然、具備真實觀察溫度，貼近臺灣教學現場口吻。"> ❤️ 溫暖自然臺灣口吻</label>
+                <label class="tag-checkbox active"><input type="checkbox" id="p_focus" checked value="著重記錄孩子在專題探究或小組互助中，面對瓶頸時的心理調適、批判性思考與同儕真實互動。"> 🧠 著重內在調適與互動</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="syllabusInput">本學期課程大綱、學習目標或專題核心內容（如：獨立研究架構、PBL社區文史走讀、環境素養課程）：</label>
+            <textarea id="syllabusInput" placeholder="請輸入本期課程內容..."></textarea>
+        </div>
+    </div>
+
+    <!-- 步驟三：全面擴充的資優特質表現 -->
+    <div class="card">
+        <h2>
+            <span><span class="step-num">3</span>步驟三：選填學生基本資料與資優特質表現（細緻分類）</span>
+        </h2>
+        
+        <div class="input-row">
+            <div class="input-cell">
+                <div class="form-group">
+                    <label for="studName">學生姓名</label>
+                    <input type="text" id="studName" placeholder="例如：小薰">
+                </div>
+            </div>
+            <div class="input-cell">
+                <div class="form-group">
+                    <label for="studGrade">年級</label>
+                    <select id="studGrade">
+                        <option value="三年級">三年級</option>
+                        <option value="四年級">四年級</option>
+                        <option value="五年級">五年級</option>
+                        <option value="六年級">六年級</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>🧬 國小資優生課堂學習表現樣貌（可依孩子實際狀況多選）：</label>
+            
+            <!-- 分類 A：認知與探究特質 -->
+            <div class="trait-category">
+                <div class="category-title">💡 認知思考與探究特質</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="觀察力極為敏銳細緻，擅長捕捉一般同儕忽略的微小變化或變因"> 🔍 觀察敏銳細緻</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="具高度自主探究熱忱，會自發性翻閱文獻、尋找數位資源解決疑惑"> 🚀 獨立自主探究</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="思維敏捷跳躍，概念聯結力強，能跨領域整合不同學科的知識"> 🧩 跨領域聯結力強</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="求知欲與打破砂鍋問到底的傾向強烈，對於感興趣的主題具有高度內在動機"> 🎯 強烈內在求知欲</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="思維不落俗套，具擴散性思考特質，常能拋出令人驚豔的創新觀點"> 💡 創意思維擴散</label>
+                </div>
+            </div>
+
+            <!-- 分類 B：學習歷程與盲點調適 -->
+            <div class="trait-category">
+                <div class="category-title">⚖️ 學習歷程與盲點調適（情意/非認知層面）</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="具高度完美主義傾向，當數據、實驗或探究進度不符預期時，神情偶爾會顯得有些急躁"> ⚠️ 挫折容忍度待引導</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="實作與執行力極高、動作迅速，但期末成果報告的文字深度與收尾論述稍顯急促"> ✍️ 文字收尾深度待提煉</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="專注力極高，一旦投入熱愛的研究主題便欲罷不能，但有時會過度執著於非核心細節"> 🎯 過度執著於細節</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="當課堂任務缺乏挑戰性時，易出現注意力渙散或失去耐心的隱性學習樣貌"> 🥱 缺乏挑戰時易渙散</label>
+                </div>
+            </div>
+
+            <!-- 分類 C：情意、領導與同儕互動 -->
+            <div class="trait-category">
+                <div class="category-title">🤝 領導力、情意特質與同儕互動</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="樂於與同儕分享觀點，並能用溫暖、具建設性的視角進行深刻的同儕互評與回饋"> 💬 善於建設性互評</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="在小組專題中展現強烈正向領導力，擅長統整同儕意見並推動討論任務"> 👑 小組正向引領領導</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="情意感官敏銳，對環境生態、社會文史或弱勢議題具備高度的同理心與反思能力"> 🌱 具高度人文生態同理</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="有時傾向於獨立完成任務，在小組協作與溝通分工的磨合期需要多一些耐心引導"> 👥 小組協作磨合期</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="customInput">補充個別化具體軼事或亮眼表現（如：期末報告發表台風穩健、走讀牛欄河畔時對文史展現濃厚反思）：</label>
+            <textarea id="customInput" style="height: 65px;" placeholder="在此補充特定課堂小軼事..."></textarea>
+        </div>
+
+        <button class="btn" onclick="generateOutputAll()">✨ 一鍵生成「最終大模型 AI 複製提示詞」與「本機模擬評語」</button>
+    </div>
+
+    <!-- 輸出結果區 -->
+    <div class="card result-section" id="outputCard" style="display: none;">
+        <h2><span>📋 智能整合輸出面板</span></h2>
+        
+        <div class="form-group">
+            <label style="color: #924040;">🔥 推薦：直接複製下方完美整合的「高級 AI 提示詞 (PROMPT)」至大型語言模型生成：</label>
+            <button class="copy-btn" onclick="copyText('promptBox')">複製高級提示詞</button>
+            <div class="result-box" id="promptBox" style="background-color: #f9fbf9; border-color: #df9f9f; font-family: monospace; font-size: 13px;"></div>
+        </div>
+
+        <div class="form-group" style="margin-top: 25px;">
+            <label style="color: var(--primary-color);">🌸 本機離線快速模擬評語結果（可直接作基礎草稿）：</label>
+            <button class="copy-btn" onclick="copyText('commentBox')">複製模擬評語</button>
+            <div class="result-box" id="commentBox"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function() {
+        renderLogTable();
+        if(!localStorage.getItem('styleLogs')) {
+            const initialLogs = [
+                { time: "系統預置分析", snippet: "在獨立研究探討生命史過程中，展現極強觀察力...面對數據不符預期時顯得有些急躁...", feature: "細緻記錄歷程、關注情意盲點調適、避免死板對仗句型" }
+            ];
+            localStorage.setItem('styleLogs', JSON.stringify(initialLogs));
+            renderLogTable();
+        }
+    };
+
+    function analyzeAndLogStyle() {
+        const text = document.getElementById('historyInput').value.trim();
+        if (!text) { alert('請先輸入過去寫過的評語片段！'); return; }
+
+        let features = ["語調溫暖自然"];
+        if (text.includes("觀察") || text.includes("細")) features.push("重視細微觀察");
+        if (text.includes("急") || text.includes("挫折") || text.includes("完美")) features.push("深度著墨情意韌性調適");
+        if (text.includes("同儕") || text.includes("互評") || text.includes("小組")) features.push("高度關注社會互動與領導力");
+        if (text.length > 100) features.push("敘事結構立體扎實");
+
+        const newLog = {
+            time: new Date().toLocaleString(),
+            snippet: text.substring(0, 45) + (text.length > 45 ? "..." : ""),
+            feature: features.join('、')
+        };
+
+        let currentLogs = JSON.parse(localStorage.getItem('styleLogs') || '[]');
+        currentLogs.unshift(newLog);
+        localStorage.setItem('styleLogs', JSON.stringify(currentLogs));
+        
+        renderLogTable();
+        document.getElementById('historyInput').value = "";
+        alert('全新寫作特徵已成功匯入本地後台資料庫！');
+    }
+
+    function renderLogTable() {
+        const logs = JSON.parse(localStorage.getItem('styleLogs') || '[]');
+        const tbody = document.getElementById('logTableBody');
+        tbody.innerHTML = "";
+        logs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${log.time}</td><td style="color:#555;">${log.snippet}</td><td style="font-weight:bold; color:var(--primary-color);">${log.feature}</td>`;
+            tbody.appendChild(row);
+        });
+    }
+
+    function generateOutputAll() {
+        const name = document.getElementById('studName').value || '該生';
+        const grade = document.getElementById('studGrade').value;
+        const syllabus = document.getElementById('syllabusInput').value || '資優班專題探究課程';
+        const custom = document.getElementById('customInput').value;
+
+        let constraints = [];
+        if (document.getElementById('p_style').checked) constraints.push(document.getElementById('p_style').value);
+        if (document.getElementById('p_tone').checked) constraints.push(document.getElementById('p_tone').value);
+        if (document.getElementById('p_focus').checked) constraints.push(document.getElementById('p_focus').value);
+
+        let selectedTraits = [];
+        document.querySelectorAll('input[name="traits"]:checked').forEach(cb => {
+            selectedTraits.push(cb.value);
+        });
+
+        const logs = JSON.parse(localStorage.getItem('styleLogs') || '[]');
+        let historicalFeatures = logs.map(l => l.feature).join('、');
+        if(!historicalFeatures) historicalFeatures = "溫暖自然、著重歷程與非認知盲點調適、禁用死板對仗式排比句。";
+
+        // 構造頂級大模型對話 Prompt
+        const finalPrompt = `你現在是一名專業的國民小學資優班導師，請依照我提供的歷史風格、內建限制與課程大綱，為一名【${grade}】的資優學生【${name}】撰寫學期成績單質性評語。
+
+【寫作核心限制（務必嚴格遵守）】
+${constraints.map((c, i) => `${i+1}. ${c}`).join('\n')}
+
+【本學期課程架構大綱】
+${syllabus}
+
+【歷史後台累積之教師筆調加權】
+您的語感特徵為：${historicalFeatures}。請抽樣融入並維持這份細緻的教學觀察溫度。
+
+【學生個別化資優特質與課堂樣貌表現】
+- 特質與盲點組合：${selectedTraits.length > 0 ? selectedTraits.join('、') : '整體表現穩健，依循步調探究'}
+- 課堂具體軼事紀錄：${custom ? custom : '無特殊特定軼事。'}
+
+請綜合以上所有的條件與特質表現，直接為該生生成一段 150 字至 200 字左右、行文自然、充滿教育溫度的質性評語。`;
+
+        document.getElementById('promptBox').innerText = finalPrompt;
+
+        // 本機模擬產生
+        let intro = grade === '三年級' || grade === '四年級' 
+            ? `${name}在課程專題探究中，展現出非常純粹且旺盛的求知熱情。` 
+            : `這學期在專題探究的深化與文獻梳理歷程中，看見了${name}思維層次與邏輯統整上的明顯抽長。`;
+
+        let body1 = "";
+        if (selectedTraits.includes("觀察力極為敏銳細緻，擅長捕捉一般同儕忽略的微小變化或變因")) {
+            body1 = `每當面對核心主題時，總能安靜且極具耐心地凝視微小細節，這種敏銳的觀察觸角讓其研究基礎非常扎實。`;
+        } else if (selectedTraits.includes("思維不落俗套，具擴散性思考特質，常能拋出令人驚豔的創新觀點")) {
+            body1 = `其腦袋轉得極快，在團體討論或概念發想時，常能打破常規，拋出令人眼睛一亮的創意思維火花。`;
+        } else {
+            body1 = `課堂上能穩定依循著脈絡向前推進，在自主學習的步調上掌握得相當合宜。`;
+        }
+
+        let body2 = "";
+        if (selectedTraits.includes("具高度完美主義傾向，當數據、實驗或探究進度不符預期時，神情偶爾會顯得有些急躁")) {
+            body2 = `不過，由於對自身表現有著極高的完美期許，當探究過程遭逢變因或進度不符預期時，偶爾會流露出些許急躁的波動。後續引導他放緩步調、重新抽絲剝繭，逐漸看見他面對未知時的心態調適與情意韌性，這是非常珍貴的成長。`;
+        } else if (selectedTraits.includes("實作與執行力極高、動作迅速，但期末成果報告的文字深度與收尾論述稍顯急促")) {
+            body2 = `在實作與執行層面動作靈敏且效率極佳，唯獨在期末將歷程化為具體的文字報告時，收尾顯得有些倉促。未來若能留給自己更多沉澱的時間進行文字淬鍊，成果的細緻度必定能與他的卓越思維相互輝映。`;
+        } else if (selectedTraits.includes("樂於與同儕分享觀點，並能用溫暖、具建設性的視角進行深刻的同儕互評與回饋")) {
+            body2 = `特別難得的是他對探究社群的貢獻，不只能大方發表，更能用溫暖且具建設性的視角給予同儕深度的歷程互評。`;
+        }
+
+        let anecdote = custom ? `特別是在${custom}，充分展現了特有的細緻思考與反思。` : "";
+        let outro = ` 期待未來持續保持這份對世界的純粹好奇，在熱愛的探究領域裡自在閃耀。`;
+
+        document.getElementById('commentBox').innerText = `${intro}${body1}${body2}${anecdote}${outro}`;
+        document.getElementById('outputCard').style.display = 'block';
+        document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyText(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => { alert('已成功複製到剪貼簿！'); })
+        .catch(() => { alert('複製失敗，請手動選取文字。'); });
+    }
+</script>
+
+</body>
+</html>
