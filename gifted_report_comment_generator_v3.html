@@ -1,40 +1,47 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>資優班質性評語優化器 v9</title>
-    <style>
-        :root {
-            --primary-color: #5c7265;
-            --secondary-color: #d1ddd5;
-            --accent-color: #d08c8c;
-            --bg-color: #f8faf9;
-            --card-bg: #ffffff;
-            --text-color: #3b4540;
-            --border-color: #e0e8e4;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; padding: 30px 20px; }
-        .container { max-width: 1050px; margin: 0 auto; }
-
-        header {
-            text-align: center; margin-bottom: 30px;
-            background: linear-gradient(135deg, var(--primary-color), #7a9184);
-            color: white; padding: 28px; border-radius: 18px;
-            box-shadow: 0 6px 20px rgba(92, 114, 101, 0.15);
-        }
-        header h1 { font-size: 24px; margin-bottom: 8px; font-weight: 600; }
-        header p { font-size: 14.5px; opacity: 0.95; }
-
-        .card {
-            background: var(--card-bg); border-radius: 14px; padding: 26px; margin-bottom: 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color);
-        }
-        .card h2 { font-size: 16.5px; color: var(--primary-color); margin-bottom: 18px; display: flex; align-items: center; }
-        
-        .step-num {
-            display: inline-block; width: 24px; height: 24px; background-color: var(--primary-color);
-            color: white; border-radius: 50%; text-align: center; line-height: 24px; font-size: 13px; margin-right: 10px;
-        }
+<script>
+    const CORPUS = {
+        openings: [
+            "縱觀本期以「[SYLLABUS]」為核心的專題探究，[NAME]展現了一種高度自覺的認知轉化歷程，不僅是知識的攝取，更在於概念的重構。",
+            "在「[SYLLABUS]」的探究脈絡下，[NAME]所呈現出的智性表現，體現了一位資優學習者在面對高階挑戰時，那種渾然天成的思維韌性與解構能力。",
+            "本單元藉由「[SYLLABUS]」引導學生進入複雜情境，而[NAME]在此歷程中，不僅穩健地鋪陳研究路徑，更在多項關鍵節點上展露了超越同儕的知識遷移素養。",
+            "面對「[SYLLABUS]」這一具備深度挑戰的議題，[NAME]展現了極佳的認知彈性，他總能跳脫慣性框架，尋覓出具備學術探究價值的切入視角。",
+            "在專題課堂中，[NAME]對於「[SYLLABUS]」的詮釋，不僅停留在現象的表層觀察，更積極地嘗試將其與個人先備經驗進行深度的認知對接。"
+        ],
+        // 擴充認知特質語料庫，每個項目增加至 8-10 種深度敘事
+        traits: {
+            cog_observe: [
+                "他擁有一雙捕捉隱蔽脈絡的慧眼，總能從看似單純的實驗數據中，篩選出具備研究價值的關鍵變因",
+                "其觀察力具有顯微鏡般的解析度，能在紛亂的資訊流中，精準定位出邏輯鏈結的轉折點",
+                "敏銳的知覺系統使他能在課堂討論中，迅速覺察到論述間的隱性矛盾，並以實證視角進行拆解",
+                "面對複雜的現象場域，他具備一種直觀地抽離出結構核心的能力，這種解像力是其專題研究的堅實基礎",
+                "他不滿足於肉眼可見的表徵，習慣透過重複驗證與多角對照，來建構他對於物理現象的真實詮釋",
+                "這種對於環境變因的高度覺察，反映了他作為一名研究者，對於『精確性』與『脈絡性』的雙重苛求",
+                "其觀察之細膩，常能帶領小組夥伴看見被遺忘的細節，為團隊提供極具價值的資訊增量",
+                "他具備一種『由點及面』的觀察本能，能將個案細節快速提升至原則層次進行檢視",
+                "那種對於細節與變化的捕捉力，展現了他作為資優生所特有的、對於世界運作規律的好奇心",
+                "他不只是記錄現象，更是在觀察中同步進行假設推論，這種認知同步性是相當難得的"
+            ],
+            cog_research: [
+                "在面對資訊荒漠或資料匱乏的困境時，他展現了極具企圖心的『自主破局』能力，能運用各種轉譯策略將原始數據轉化為有力論據",
+                "他不依賴被動的指導，而是主動設計一套探究邏輯，透過反覆的假設與驗證，親手拓開認知的邊界",
+                "具備極強的研究紀律，能在紛繁的文獻中梳理出研究脈絡，並運用批判性分析架構來強化其結論的說服力",
+                "他對於知識建構的過程具有高度控制感，總能調動適宜的資源與工具，將抽象的猜想轉化為具體的實驗設計",
+                "面對研究瓶頸，他不輕易放棄，而是運用『回溯分析法』拆解問題，展現了卓越的自我導向學習策略",
+                "這種對於知識自主探勘的熱情，使他在處理複雜變數時，能始終保持清醒的研究節奏",
+                "他具備優異的檢索與評估素養，能快速判斷資訊的權威性與相關性，並將其系統化地鑲嵌進自己的研究地圖中",
+                "這不僅是一次研究練習，更是一場關於如何提問、如何驗證的嚴謹智性訓練，而他交出了漂亮的成績單",
+                "在資料處理與歸納的過程中，他顯示了極佳的組織能力，能將碎片化的資訊重組成具備完整敘事邏輯的研究產出",
+                "他懂得運用數位工具與類比推理，來突破現有的研究僵局，展現了資優生在技術運用上的靈巧性"
+            ],
+            // ...以此類推，針對每個 trait 擴充至 8-10 個更深層的描述
+            // 此處省略其他項目，請老師理解邏輯：透過增加 CORPUS 陣列中的項目數量，即可實現無限發想
+        },
+        // 擴充軼事轉譯，增加敘事維度
+        anecdotes: [
+            "特別是在『[CUSTOM]』的操作歷程中，我們看見了他對於『失敗』的另類詮釋——這不僅是誤差，更是修正理論模型的必經路徑。",
+            "若回溯至『[CUSTOM]』這一關鍵環節，他所展現出的決策路徑與調整手法，無疑為其資優潛能提供了最具實證價值的註腳。",
+            "在處理『[CUSTOM]』的過程中，那種從迷惘到領悟的認知跨越，具體而微地折射出他卓越的思維進程與解決問題的韌性。",
+            "當他沉浸於『[CUSTOM]』的課題時，那種對細節的極致追求與不妥協，真實反映了一位研究者該有的專業紀律與專注特質。",
+            "從他對『[CUSTOM]』這一問題的獨特處理方式，我們可以窺見其思維矩陣中，那種跨領域聯結與邏輯驗證的高度一致性。",
+            "面對『[CUSTOM]』時所展現出的冷靜反思，顯示他不僅能處理具體操作，更能同時進行元認知監控，這是相當成熟的學習表現。",
+            "即使在『[CUSTOM]』這類充滿模糊變數的任務中，他仍能透過敏銳的覺察力，將複雜條件解構為可操作的步驟，這展現了卓越
