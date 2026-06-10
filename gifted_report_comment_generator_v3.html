@@ -2,86 +2,174 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>資優班深度評語生成器 v11</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資優班質性評語優化器 v12 (智慧匯入與無限矩陣版)</title>
     <style>
-        :root { --primary: #4a675d; --secondary: #c2d1ca; --accent: #b87a7a; --bg: #f9fbf9; }
-        body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: var(--bg); padding: 30px 20px; line-height: 1.8; color: #333; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; border: 1px solid #e1e8e4; }
-        h2 { color: var(--primary); font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
-        label { font-weight: bold; display: block; margin: 10px 0 5px; font-size: 14px; }
-        textarea, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .tag { padding: 6px 12px; border: 1px solid #ccc; border-radius: 15px; cursor: pointer; font-size: 13px; transition: 0.3s; }
-        .tag.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .btn-add { background: #6a8899; }
-        #output { background: #fff; padding: 20px; border: 2px solid var(--primary); border-radius: 8px; margin-top: 20px; white-space: pre-wrap; display: none; }
+        :root {
+            --primary-color: #586f62;
+            --secondary-color: #c8dad2;
+            --accent-color: #c47d7d;
+            --bg-color: #fdfdfd;
+            --card-bg: #ffffff;
+            --text-color: #2c3530;
+            --border-color: #d8e2dc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.8; padding: 30px 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            text-align: center; margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary-color), #748b7e);
+            color: white; padding: 30px; border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(88, 111, 98, 0.15);
+        }
+        header h1 { font-size: 24px; margin-bottom: 8px; font-weight: 600; }
+        header p { font-size: 14.5px; opacity: 0.95; }
+
+        .card {
+            background: var(--card-bg); border-radius: 14px; padding: 28px; margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid var(--border-color);
+        }
+        .card h2 { font-size: 17px; color: var(--primary-color); margin-bottom: 18px; display: flex; align-items: center; border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; }
+        
+        .step-num {
+            display: inline-block; width: 26px; height: 26px; background-color: var(--primary-color);
+            color: white; border-radius: 50%; text-align: center; line-height: 26px; font-size: 13px; margin-right: 12px;
+        }
+
+        .form-group { margin-bottom: 22px; }
+        label { display: block; font-size: 14.5px; font-weight: bold; margin-bottom: 8px; color: #38453e; }
+        
+        .trait-category { margin-bottom: 18px; background: #f7faf8; padding: 18px; border-radius: 10px; border: 1px dashed #a3b8ad; }
+        .category-title { font-size: 14.5px; color: #43554b; font-weight: bold; margin-bottom: 12px; border-left: 4px solid var(--accent-color); padding-left: 10px;}
+
+        textarea {
+            width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 10px;
+            background-color: #fafcfb; color: var(--text-color); font-size: 14.5px; resize: vertical; transition: 0.3s;
+        }
+        textarea:focus, input:focus { outline: none; border-color: var(--primary-color); background-color: #fff; box-shadow: 0 0 0 3px rgba(88, 111, 98, 0.15); }
+        
+        .input-row { display: flex; gap: 20px; margin-bottom: 18px; }
+        .input-cell { flex: 1; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; background-color: #fafcfb; font-size: 14.5px; }
+
+        .characteristic-tags { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag-checkbox {
+            font-size: 13.5px; background: white; padding: 8px 18px; border-radius: 20px;
+            cursor: pointer; user-select: none; border: 1px solid #b8c7bf; color: #485850; transition: 0.2s;
+        }
+        .tag-checkbox input { display: none; }
+        .tag-checkbox.active { background-color: var(--primary-color); border-color: var(--primary-color); color: white; font-weight: bold; box-shadow: 0 2px 8px rgba(88, 111, 98, 0.25); }
+
+        .btn {
+            background-color: var(--primary-color); color: white; border: none; padding: 16px 24px; font-size: 15.5px;
+            font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; letter-spacing: 1px; transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 8px;
+        }
+        .btn:hover { background-color: #44564c; transform: translateY(-1px); }
+        .btn-blue { background-color: #6c8878; }
+        .btn-blue:hover { background-color: #54665c; }
+
+        .result-section { background-color: #f5f8f6; border: 2px solid var(--primary-color); border-radius: 14px; }
+        .result-box {
+            background: white; border: 1px solid #c2cfc9; border-radius: 10px; padding: 25px; margin-top: 18px;
+            font-size: 15.5px; line-height: 1.9; white-space: pre-wrap; color: #1a241e;
+        }
+
+        .copy-btn {
+            background-color: var(--secondary-color); color: #232c27; border: none; padding: 8px 16px;
+            font-size: 13.5px; border-radius: 6px; cursor: pointer; float: right; font-weight: bold;
+        }
+        .copy-btn:hover { background-color: var(--primary-color); color: white; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <header><h1>資優評語生成器 v11 (深度語料增量版)</h1></header>
-    
+    <header>
+        <h1>資優班質性評語優化器 v12 (智慧匯入與無限矩陣版) 🌸</h1>
+        <p>匯入原始紀錄與成績，透過多維度矩陣發想與深度語料庫，編織出具備學術厚度與鑑別度的評語</p>
+    </header>
+
     <div class="card">
-        <label>🎯 單元目標與學習架構</label>
-        <textarea id="syllabus" placeholder="輸入單元核心概念，系統將轉化為高階探究背景..."></textarea>
-        <label>✍️ 筆調特徵風格</label>
-        <input type="text" id="style" value="筆調自然流暢、具備學術觀察高度、強調認知演化">
+        <h2><span class="step-num">1</span>步驟一：基本設定與成績單資料匯入</h2>
+        <div class="input-row">
+            <div class="input-cell" style="flex: 0.4;">
+                <label for="studName">學生姓名</label>
+                <input type="text" id="studName" placeholder="例如：小薰">
+            </div>
+        </div>
+        
+        <div class="form-group" style="background-color: #f4f8f5; border: 1px dashed #748b7e; padding: 18px; border-radius: 10px;">
+            <label for="transcriptInput" style="color: #35443b;">📁 匯入之學生原始成績單 / 平時表現紀錄資料：</label>
+            <p style="font-size: 12.5px; color: #52665a; margin-bottom: 10px;">請將孩子的量化分數、作業評語、平時表現等量化/質性紀錄直接貼上。系統後台將以此作為基礎資料庫進行特質提取與交互參考。</p>
+            <textarea id="transcriptInput" style="height: 100px;" placeholder="例如：平時成績 92 分，專題作業表現優異，課堂提問具批判性，期末報告獲得 A+ ..."></textarea>
+        </div>
+        
+        <div class="form-group" style="background-color: #fff9f9; border: 1px dashed #c47d7d; padding: 18px; border-radius: 10px;">
+            <label for="syllabusInput" style="color: #824242;">🎯 本期學習目標、學習內容與單元架構：</label>
+            <p style="font-size: 12.5px; color: #915555; margin-bottom: 10px;">輸入本單元的核心概念。系統將結合上述成績單資料，將其轉化為探究背景，引出孩子的高階思維表現。</p>
+            <textarea id="syllabusInput" style="height: 80px;" placeholder="例如：透過牛欄河畔的文史走讀，理解社區發展與生態變遷的關聯性..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="currentStyleInput">✍️ 評語筆調與風格要求（將融入結尾）：</label>
+            <input type="text" id="currentStyleInput" value="筆調自然流暢、具備學術觀察高度、強調認知演化與資優特質">
+        </div>
     </div>
 
     <div class="card">
-        <label>🧬 資優特質勾選</label>
-        <div class="tags" id="trait-tags"></div>
-        <label style="margin-top:20px;">📌 個別化軼事（關鍵事件轉譯）</label>
-        <textarea id="custom" placeholder="輸入如：修正光源實驗、主動整理文史資料..."></textarea>
-        <button class="btn" onclick="generate(false)">✨ 生成深度評語</button>
-        <button class="btn btn-add" onclick="generate(true)">➕ 無限發想疊加（全新視角）</button>
+        <h2><span class="step-num">2</span>步驟二：選填資優特質與具體軼事</h2>
+        
+        <div class="form-group">
+            <label>🧬 國小資優生課堂表現特徵（每次生成與疊加皆會動態編譯）：</label>
+            
+            <div class="trait-category">
+                <div class="category-title">💡 認知思考與探究特質 (Cognitive Traits)</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_observe"> 🔍 微觀覺察與解像力</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_research"> 🚀 自主破局與資訊檢索</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_connect"> 🧩 跨領域概念聯結與重組</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_desire"> 🎯 內在求知動機與執念</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_creative"> 💡 突破框架擴散性思維</label>
+                </div>
+            </div>
+
+            <div class="trait-category">
+                <div class="category-title">⚖️ 學習歷程與盲點調適 (Affective & Resilience)</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_perfect"> ⚠️ 完美主義與挫折容忍調適</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_write"> ✍️ 實作強但後設文字收斂</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_detail"> 🎯 高度專注易陷局部細節</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_bored"> 🥱 需高認知挑戰以維持心流</label>
+                </div>
+            </div>
+
+            <div class="trait-category">
+                <div class="category-title">🤝 同儕互動與社會情意 (Social & Empathy)</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_review"> 💬 建設性對話與鷹架同儕</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_leader"> 👑 溫和且具系統觀領導力</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_empathy"> 🌱 人文生態同理反思</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_alone"> 👥 偏好獨立作業協作需引導</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" style="background-color: #f4f7f5; border: 1px dashed #586f62; padding: 18px; border-radius: 10px;">
+            <label for="customInput" style="color: #29352e;">📌 個別化具體軼事：</label>
+            <p style="font-size: 12.5px; color: #43544a; margin-bottom: 10px;">請簡述一個具體行為。系統將與匯入的成績單交互參照，昇華為佐證資優特質的分析語句。</p>
+            <textarea id="customInput" style="height: 65px;" placeholder="例如：在設計蘭花螳螂擬態研究時，冷靜地將變因控制修正了三次..."></textarea>
+        </div>
+
+        <button class="btn" onclick="generateDeepComment(false)">✨ 智慧化編譯專屬深度評語</button>
+        <button class="btn btn-blue" onclick="generateDeepComment(true)">➕ 無限發想疊加（採用完全不同語法、視角與詞彙）</button>
     </div>
 
-    <div id="output" class="card"></div>
-</div>
-
-<script>
-    const TRAITS = {
-        cog_observe: ["其具備極高解像力的認知觸角，總能在看似尋常的現象中，剝絲抽繭出被多數人遺漏的核心變因", "擁有顯微鏡般的解析度，能在紛亂的數據流中，精準定位出邏輯鏈結的轉折點", "這種『由點及面』的觀察本能，展現了他作為研究者，對於世界運作規律的高階拆解能力"],
-        cog_research: ["在面對資訊荒漠時，展現了強悍的自主破局能力，能有系統地調動數位資源來填補認知缺口", "具備極強的研究紀律，能運用批判性分析架構，將抽象猜想轉化為嚴謹的實驗模型", "展現了超越同儕的自我導向學習策略，在探究瓶頸中總能透過回溯分析法找到突破點"],
-        cog_connect: ["其心智運作極具彈性，擅長將跨度極大的學科概念進行解構，並重組成具備解釋力的分析框架", "大腦如同高效的聯結器，能將零散事實結構化嵌合，體現了卓越的知識遷移素養", "具備宏觀的系統性思維，總能巧妙地將新知與舊有經驗嫁接，產出極具邏輯厚度的見解"],
-        adj_perfect: ["他對於完美的執著，在探究初期或許是種壓力，但近期已轉化為一種對實驗精準度的專業紀律", "在面對模糊變數時，他逐漸學會將『不確定性』視為探究的一環，這種認知上的成熟度令人激賞", "完美主義傾向在他身上已轉化為高品質的產出動力，他正在學習如何在追求卓越與彈性適應間取得平衡"],
-        soc_leader: ["於小組協作時散發著沉穩的隱性領導氣質，能具備系統觀地梳理夥伴間的分歧，推動任務安穩前行", "展現出極佳的團隊協調手腕，善於在紛亂的意見中提煉共識，引領小組成員突破思考停滯期", "自然而然地成為小組的核心穩定力量，透過清晰的邏輯與體貼的引導，讓團體目標得以精采落實"]
-    };
-
-    // 初始化標籤
-    const tagsContainer = document.getElementById('trait-tags');
-    Object.keys(TRAITS).forEach(key => {
-        const span = document.createElement('span');
-        span.className = 'tag';
-        span.innerText = key;
-        span.onclick = () => span.classList.toggle('active');
-        tagsContainer.appendChild(span);
-    });
-
-    function generate(isAppend) {
-        const syllabus = document.getElementById('syllabus').value;
-        const style = document.getElementById('style').value;
-        const custom = document.getElementById('custom').value;
-        const activeTraits = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
-        
-        let output = [`本期探究歷程中，在「${syllabus || '專題探究'}」的架構下，${document.getElementById('studName').value || '該生'}展現了高度的認知韌性。`];
-        
-        activeTraits.forEach(t => {
-            const list = TRAITS[t];
-            output.push(list[Math.floor(Math.random() * list.length)]);
-        });
-
-        if (custom) output.push(`特別是在「${custom}」的歷程中，其思考的精密度與處置策略，充分佐證了其資優特質的深度。`);
-        output.push(`期許他在${style}的指引下，持續拓展認知的疆界。`);
-
-        const div = document.getElementById('output');
-        div.style.display = 'block';
-        if (isAppend) div.innerText += "\n\n---\n\n" + output.join("，");
-        else div.innerText = output.join("，");
-    }
-</script>
-</body>
-</html>
+    <div class="card result-section" id="outputCard" style="display: none;">
+        <h2><span>🌸 深度轉譯評語生成結果</span>
+            <button class="copy-btn" onclick="copyText('commentBox')">複製全部文字</button>
+        </h2>
+        <div class="result-box" id="commentBox"></div>
