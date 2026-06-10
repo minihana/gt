@@ -1,47 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>資優班深度評語生成器 v11</title>
+    <style>
+        :root { --primary: #4a675d; --secondary: #c2d1ca; --accent: #b87a7a; --bg: #f9fbf9; }
+        body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: var(--bg); padding: 30px 20px; line-height: 1.8; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; border: 1px solid #e1e8e4; }
+        h2 { color: var(--primary); font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
+        label { font-weight: bold; display: block; margin: 10px 0 5px; font-size: 14px; }
+        textarea, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag { padding: 6px 12px; border: 1px solid #ccc; border-radius: 15px; cursor: pointer; font-size: 13px; transition: 0.3s; }
+        .tag.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .btn-add { background: #6a8899; }
+        #output { background: #fff; padding: 20px; border: 2px solid var(--primary); border-radius: 8px; margin-top: 20px; white-space: pre-wrap; display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header><h1>資優評語生成器 v11 (深度語料增量版)</h1></header>
+    
+    <div class="card">
+        <label>🎯 單元目標與學習架構</label>
+        <textarea id="syllabus" placeholder="輸入單元核心概念，系統將轉化為高階探究背景..."></textarea>
+        <label>✍️ 筆調特徵風格</label>
+        <input type="text" id="style" value="筆調自然流暢、具備學術觀察高度、強調認知演化">
+    </div>
+
+    <div class="card">
+        <label>🧬 資優特質勾選</label>
+        <div class="tags" id="trait-tags"></div>
+        <label style="margin-top:20px;">📌 個別化軼事（關鍵事件轉譯）</label>
+        <textarea id="custom" placeholder="輸入如：修正光源實驗、主動整理文史資料..."></textarea>
+        <button class="btn" onclick="generate(false)">✨ 生成深度評語</button>
+        <button class="btn btn-add" onclick="generate(true)">➕ 無限發想疊加（全新視角）</button>
+    </div>
+
+    <div id="output" class="card"></div>
+</div>
+
 <script>
-    const CORPUS = {
-        openings: [
-            "縱觀本期以「[SYLLABUS]」為核心的專題探究，[NAME]展現了一種高度自覺的認知轉化歷程，不僅是知識的攝取，更在於概念的重構。",
-            "在「[SYLLABUS]」的探究脈絡下，[NAME]所呈現出的智性表現，體現了一位資優學習者在面對高階挑戰時，那種渾然天成的思維韌性與解構能力。",
-            "本單元藉由「[SYLLABUS]」引導學生進入複雜情境，而[NAME]在此歷程中，不僅穩健地鋪陳研究路徑，更在多項關鍵節點上展露了超越同儕的知識遷移素養。",
-            "面對「[SYLLABUS]」這一具備深度挑戰的議題，[NAME]展現了極佳的認知彈性，他總能跳脫慣性框架，尋覓出具備學術探究價值的切入視角。",
-            "在專題課堂中，[NAME]對於「[SYLLABUS]」的詮釋，不僅停留在現象的表層觀察，更積極地嘗試將其與個人先備經驗進行深度的認知對接。"
-        ],
-        // 擴充認知特質語料庫，每個項目增加至 8-10 種深度敘事
-        traits: {
-            cog_observe: [
-                "他擁有一雙捕捉隱蔽脈絡的慧眼，總能從看似單純的實驗數據中，篩選出具備研究價值的關鍵變因",
-                "其觀察力具有顯微鏡般的解析度，能在紛亂的資訊流中，精準定位出邏輯鏈結的轉折點",
-                "敏銳的知覺系統使他能在課堂討論中，迅速覺察到論述間的隱性矛盾，並以實證視角進行拆解",
-                "面對複雜的現象場域，他具備一種直觀地抽離出結構核心的能力，這種解像力是其專題研究的堅實基礎",
-                "他不滿足於肉眼可見的表徵，習慣透過重複驗證與多角對照，來建構他對於物理現象的真實詮釋",
-                "這種對於環境變因的高度覺察，反映了他作為一名研究者，對於『精確性』與『脈絡性』的雙重苛求",
-                "其觀察之細膩，常能帶領小組夥伴看見被遺忘的細節，為團隊提供極具價值的資訊增量",
-                "他具備一種『由點及面』的觀察本能，能將個案細節快速提升至原則層次進行檢視",
-                "那種對於細節與變化的捕捉力，展現了他作為資優生所特有的、對於世界運作規律的好奇心",
-                "他不只是記錄現象，更是在觀察中同步進行假設推論，這種認知同步性是相當難得的"
-            ],
-            cog_research: [
-                "在面對資訊荒漠或資料匱乏的困境時，他展現了極具企圖心的『自主破局』能力，能運用各種轉譯策略將原始數據轉化為有力論據",
-                "他不依賴被動的指導，而是主動設計一套探究邏輯，透過反覆的假設與驗證，親手拓開認知的邊界",
-                "具備極強的研究紀律，能在紛繁的文獻中梳理出研究脈絡，並運用批判性分析架構來強化其結論的說服力",
-                "他對於知識建構的過程具有高度控制感，總能調動適宜的資源與工具，將抽象的猜想轉化為具體的實驗設計",
-                "面對研究瓶頸，他不輕易放棄，而是運用『回溯分析法』拆解問題，展現了卓越的自我導向學習策略",
-                "這種對於知識自主探勘的熱情，使他在處理複雜變數時，能始終保持清醒的研究節奏",
-                "他具備優異的檢索與評估素養，能快速判斷資訊的權威性與相關性，並將其系統化地鑲嵌進自己的研究地圖中",
-                "這不僅是一次研究練習，更是一場關於如何提問、如何驗證的嚴謹智性訓練，而他交出了漂亮的成績單",
-                "在資料處理與歸納的過程中，他顯示了極佳的組織能力，能將碎片化的資訊重組成具備完整敘事邏輯的研究產出",
-                "他懂得運用數位工具與類比推理，來突破現有的研究僵局，展現了資優生在技術運用上的靈巧性"
-            ],
-            // ...以此類推，針對每個 trait 擴充至 8-10 個更深層的描述
-            // 此處省略其他項目，請老師理解邏輯：透過增加 CORPUS 陣列中的項目數量，即可實現無限發想
-        },
-        // 擴充軼事轉譯，增加敘事維度
-        anecdotes: [
-            "特別是在『[CUSTOM]』的操作歷程中，我們看見了他對於『失敗』的另類詮釋——這不僅是誤差，更是修正理論模型的必經路徑。",
-            "若回溯至『[CUSTOM]』這一關鍵環節，他所展現出的決策路徑與調整手法，無疑為其資優潛能提供了最具實證價值的註腳。",
-            "在處理『[CUSTOM]』的過程中，那種從迷惘到領悟的認知跨越，具體而微地折射出他卓越的思維進程與解決問題的韌性。",
-            "當他沉浸於『[CUSTOM]』的課題時，那種對細節的極致追求與不妥協，真實反映了一位研究者該有的專業紀律與專注特質。",
-            "從他對『[CUSTOM]』這一問題的獨特處理方式，我們可以窺見其思維矩陣中，那種跨領域聯結與邏輯驗證的高度一致性。",
-            "面對『[CUSTOM]』時所展現出的冷靜反思，顯示他不僅能處理具體操作，更能同時進行元認知監控，這是相當成熟的學習表現。",
-            "即使在『[CUSTOM]』這類充滿模糊變數的任務中，他仍能透過敏銳的覺察力，將複雜條件解構為可操作的步驟，這展現了卓越
+    const TRAITS = {
+        cog_observe: ["其具備極高解像力的認知觸角，總能在看似尋常的現象中，剝絲抽繭出被多數人遺漏的核心變因", "擁有顯微鏡般的解析度，能在紛亂的數據流中，精準定位出邏輯鏈結的轉折點", "這種『由點及面』的觀察本能，展現了他作為研究者，對於世界運作規律的高階拆解能力"],
+        cog_research: ["在面對資訊荒漠時，展現了強悍的自主破局能力，能有系統地調動數位資源來填補認知缺口", "具備極強的研究紀律，能運用批判性分析架構，將抽象猜想轉化為嚴謹的實驗模型", "展現了超越同儕的自我導向學習策略，在探究瓶頸中總能透過回溯分析法找到突破點"],
+        cog_connect: ["其心智運作極具彈性，擅長將跨度極大的學科概念進行解構，並重組成具備解釋力的分析框架", "大腦如同高效的聯結器，能將零散事實結構化嵌合，體現了卓越的知識遷移素養", "具備宏觀的系統性思維，總能巧妙地將新知與舊有經驗嫁接，產出極具邏輯厚度的見解"],
+        adj_perfect: ["他對於完美的執著，在探究初期或許是種壓力，但近期已轉化為一種對實驗精準度的專業紀律", "在面對模糊變數時，他逐漸學會將『不確定性』視為探究的一環，這種認知上的成熟度令人激賞", "完美主義傾向在他身上已轉化為高品質的產出動力，他正在學習如何在追求卓越與彈性適應間取得平衡"],
+        soc_leader: ["於小組協作時散發著沉穩的隱性領導氣質，能具備系統觀地梳理夥伴間的分歧，推動任務安穩前行", "展現出極佳的團隊協調手腕，善於在紛亂的意見中提煉共識，引領小組成員突破思考停滯期", "自然而然地成為小組的核心穩定力量，透過清晰的邏輯與體貼的引導，讓團體目標得以精采落實"]
+    };
+
+    // 初始化標籤
+    const tagsContainer = document.getElementById('trait-tags');
+    Object.keys(TRAITS).forEach(key => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.innerText = key;
+        span.onclick = () => span.classList.toggle('active');
+        tagsContainer.appendChild(span);
+    });
+
+    function generate(isAppend) {
+        const syllabus = document.getElementById('syllabus').value;
+        const style = document.getElementById('style').value;
+        const custom = document.getElementById('custom').value;
+        const activeTraits = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
+        
+        let output = [`本期探究歷程中，在「${syllabus || '專題探究'}」的架構下，${document.getElementById('studName').value || '該生'}展現了高度的認知韌性。`];
+        
+        activeTraits.forEach(t => {
+            const list = TRAITS[t];
+            output.push(list[Math.floor(Math.random() * list.length)]);
+        });
+
+        if (custom) output.push(`特別是在「${custom}」的歷程中，其思考的精密度與處置策略，充分佐證了其資優特質的深度。`);
+        output.push(`期許他在${style}的指引下，持續拓展認知的疆界。`);
+
+        const div = document.getElementById('output');
+        div.style.display = 'block';
+        if (isAppend) div.innerText += "\n\n---\n\n" + output.join("，");
+        else div.innerText = output.join("，");
+    }
+</script>
+</body>
+</html>
