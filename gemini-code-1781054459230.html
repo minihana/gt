@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資優班成績單質性評語產生器 v4</title>
+    <style>
+        :root {
+            --primary-color: #5b7065;
+            --secondary-color: #c9d6cd;
+            --accent-color: #df9f9f;
+            --bg-color: #f7f9f8;
+            --card-bg: #ffffff;
+            --text-color: #3a4740;
+            --border-color: #e2e8e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary-color), #7a8f83);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #4a5750;
+        }
+
+        .trait-category {
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #e2e8e5;
+            padding-bottom: 12px;
+        }
+        .trait-category:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .category-title {
+            font-size: 13px;
+            color: #72857a;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 110px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fafbfa;
+            color: var(--text-color);
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .input-cell {
+            flex: 1;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fafbfa;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .characteristic-tags {
+            margin-top: 5px;
+        }
+
+        .tag-checkbox {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 8px;
+            font-size: 12.5px;
+            background: #f0f2f1;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            user-select: none;
+        }
+
+        .tag-checkbox input {
+            margin-right: 5px;
+        }
+
+        .tag-checkbox.active {
+            background-color: #e3ece8;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background-color: #4a5c53;
+        }
+
+        .btn-secondary {
+            background-color: #7a8f83;
+            margin-top: 8px;
+        }
+
+        .result-section {
+            background-color: #f0f4f2;
+            border: 1px dashed var(--primary-color);
+        }
+
+        .result-box {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+            font-size: 14px;
+            white-space: pre-wrap;
+            color: #2e3b33;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .log-table th, .log-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+        }
+
+        .log-table th {
+            background-color: #eef2f0;
+            color: var(--primary-color);
+        }
+
+        .copy-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .step-num {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>資優班成績單評語優化產生器 v4 (動態區分度升級版) 🌸</h1>
+        <p>徹底告別套版感！針對每位資優生不同的特質與軼事組合，動態編織專屬質性評語</p>
+    </header>
+
+    <div class="card">
+        <h2><span><span class="step-num">1</span>步驟一：歷史評語風格庫分析</span></h2>
+        <div class="form-group">
+            <label for="historyInput">貼上您過去親自撰寫的評語範例（可持續累積）：</label>
+            <textarea id="historyInput" placeholder="在此貼上您以前寫的個別化評語，系統會自動在本地瀏覽器後台分析並留存您的語調特徵..."></textarea>
+            <button class="btn btn-secondary" style="width: auto; padding: 6px 16px; font-size: 13px;" onclick="analyzeAndLogStyle()">📥 分析語調風格並記錄至後台</button>
+        </div>
+        <div>
+            <label>📊 本地後台已儲存的筆調特徵：</label>
+            <div style="overflow-x: auto;">
+                <table class="log-table" id="logTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">分析時間</th>
+                            <th style="width: 55%;">原評語片段摘要</th>
+                            <th style="width: 30%;">系統提取之筆調特徵</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span><span class="step-num">2</span>步驟二：內建 PROMPT 限制與大綱設定</span></h2>
+        <div class="form-group">
+            <label>📋 內建寫作核心限制（預設已啟用）：</label>
+            <div class="characteristic-tags">
+                <label class="tag-checkbox active"><input type="checkbox" id="p_style" checked value="嚴格禁止使用任何公式化、對仗式排比（例如：絕對不能出現「不僅...更是...」、「不僅在...更在...」等生硬死板的句型），請使用流暢自然的敘事散文筆調。"> ❌ 禁用生硬公式對仗</label>
+                <label class="tag-checkbox active"><input type="checkbox" id="p_tone" checked value="文字語調需流暢自然、充滿實地教學觀察的溫度，貼近臺灣教育現場的日常口吻。"> ❤️ 溫暖自然臺灣口吻</label>
+                <label class="tag-checkbox active"><input type="checkbox" id="p_focus" checked value="著重記錄孩子在專題探究或小組互助中，面對瓶頸時的心理調適、批判性思考與同儕真實互動。"> 🧠 著重內在調適與互動</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="syllabusInput">本學期課程大綱、學習目標或專題核心內容（如：獨立研究架構、PBL社區文史走讀、環境素養課程）：</label>
+            <textarea id="syllabusInput" placeholder="請輸入本期課程內容..."></textarea>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span><span class="step-num">3</span>步驟三：選填學生基本資料與資優特質表現</span></h2>
+        
+        <div class="input-row">
+            <div class="input-cell">
+                <label for="studName">學生姓名</label>
+                <input type="text" id="studName" placeholder="例如：小薰">
+            </div>
+            <div class="input-cell">
+                <label for="studGrade">年級</label>
+                <select id="studGrade">
+                    <option value="三年級">三年級</option>
+                    <option value="四年級">四年級</option>
+                    <option value="五年級">五年級</option>
+                    <option value="六年級">六年級</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 15px;">
+            <label>🧬 國小資優生課堂學習表現樣貌（請依孩子實際狀況勾選，每次組合不同，產出內容將大相逕庭）：</label>
+            
+            <div class="trait-category">
+                <div class="category-title">💡 認知思考與探究特質</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="cog" data-text="在面對探究主題時，擁有極其細緻敏銳的觀察觸角，能自發捕捉到一般同儕容易忽略的微小變化與變因" value="觀察力極為敏銳細緻，擅長捕捉一般同儕忽略的微小變化或變因"> 🔍 觀察敏銳細緻</label>
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="cog" data-text="展現出高度的自主探究熱忱，遇到盲點時會自發性地翻閱相關文獻、尋求各種數位資源來自我解惑" value="具高度自主探究熱忱，會自發性翻閱文獻、尋找數位資源解決疑惑"> 🚀 獨立自主探究</label>
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="cog" data-text="其思維敏捷且充滿跨領域的聯結力，非常擅長將不同學科的概念進行結構化的整合" value="思維敏捷跳躍，概念聯結力強，能跨領域整合不同學科的知識"> 🧩 跨領域聯結力強</label>
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="cog" data-text="擁有打破砂鍋問到底的強烈內在動機，對於自己感興趣的主題會投入超乎常人的求知熱情" value="求知欲與打破砂鍋問到底的傾向強烈，對於感興趣的主題具有高度內在動機"> 🎯 強烈內在求知欲</label>
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="cog" data-text="具備不落俗套的擴散性思考特質，在腦力激盪時常能拋出令人驚豔的創新思維觀點" value="思維不落俗套，具擴散性思考特質，常能拋出令人驚豔的創新觀點"> 💡 創意思維擴散</label>
+                </div>
+            </div>
+
+            <div class="trait-category">
+                <div class="category-title">⚖️ 學習歷程與盲點調適（情意/非認知層面）</div>
+                <div class="characteristic-tags">
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="adj" data-text="然而在情意層面上存在較為明顯的完美主義傾向，當實驗數據或探究進度未達預期時，神情偶爾會流露出些許急躁與挫折感" value="具高度完美主義傾向，當數據、實驗或探究進度不符預期時，神情偶爾會顯得有些急躁"> ⚠️ 挫折容忍度待引導</label>
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="adj" data-text="雖然課堂實作的執行力極高且動作迅速，不過在期末將歷程轉化為書面成果時，整體的文字深度與收尾論述則顯得有些急促" value="實作與執行力極高、動作迅速，但期末成果報告的文字深度與收尾論述稍顯急促"> ✍️ 文字收尾深度待提煉</label>
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="adj" data-text="一旦投入熱愛的研究主題便極度專注，但有時會不自覺地過度執著於非核心的枝微末節，需要適時引導其跳脫出來看大局" value="專注力極高，一旦投入熱愛的研究主題便欲罷不能，但有時會過度執著於非核心細節"> 🎯 過度執著於細節</label>
+                    <label class="tag-checkbox" onclick="toggleTag(this)"><input type="checkbox" name="traits" data-type="adj" data-text="在面對缺乏難度或過於常規的課堂任務時，容易出現隱性的注意力渙散，對於高度挑戰性任務的耐受度反而更高" value="當課堂任務缺乏挑戰性時，
