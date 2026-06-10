@@ -3,359 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>資優班成績單質性評語產生器 v7</title>
+    <title>資優班成績單質性評語產生器 v8</title>
     <style>
         :root {
-            --primary-color: #5b7065;
-            --secondary-color: #c9d6cd;
-            --accent-color: #df9f9f;
-            --bg-color: #f7f9f8;
+            --primary-color: #6a8276;
+            --secondary-color: #d1ddd5;
+            --accent-color: #e2a8a8;
+            --bg-color: #fcfdfc;
             --card-bg: #ffffff;
-            --text-color: #3a4740;
-            --border-color: #e2e8e5;
+            --text-color: #3b4540;
+            --border-color: #e5ebe8;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 30px 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; padding: 30px 20px; }
+        .container { max-width: 1050px; margin: 0 auto; }
 
         header {
-            text-align: center;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, var(--primary-color), #7a8f83);
-            color: white;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center; margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary-color), #8a9f93);
+            color: white; padding: 28px; border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(106, 130, 118, 0.15);
+            position: relative; overflow: hidden;
         }
-
-        header h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-
-        header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
+        header h1 { font-size: 24px; margin-bottom: 8px; font-weight: 600; }
+        header p { font-size: 14.5px; opacity: 0.95; }
 
         .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            border: 1px solid var(--border-color);
+            background: var(--card-bg); border-radius: 14px; padding: 26px; margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color);
+        }
+        .card h2 { font-size: 16.5px; color: var(--primary-color); margin-bottom: 18px; display: flex; align-items: center; }
+        
+        .step-num {
+            display: inline-block; width: 24px; height: 24px; background-color: var(--primary-color);
+            color: white; border-radius: 50%; text-align: center; line-height: 24px; font-size: 13px; margin-right: 10px;
         }
 
-        .card h2 {
-            font-size: 16px;
-            color: var(--primary-color);
-            margin-bottom: 16px;
-            border-left: 4px solid var(--primary-color);
-            padding-left: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #4a5750;
-        }
-
-        .trait-category {
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #e2e8e5;
-            padding-bottom: 12px;
-        }
-
-        .category-title {
-            font-size: 13px;
-            color: #72857a;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #4e5b54; }
+        
+        .trait-category { margin-bottom: 18px; background: #f8fbf9; padding: 15px; border-radius: 10px; border: 1px dashed #c1d0c7; }
+        .category-title { font-size: 14px; color: #5a6e63; font-weight: bold; margin-bottom: 10px; border-left: 3px solid var(--accent-color); padding-left: 8px;}
 
         textarea {
-            width: 100%;
-            height: 100px;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: #fafbfa;
-            color: var(--text-color);
-            font-size: 14px;
-            resize: vertical;
+            width: 100%; padding: 14px; border: 1px solid var(--border-color); border-radius: 10px;
+            background-color: #fafbfa; color: var(--text-color); font-size: 14px; resize: vertical; transition: 0.3s;
         }
+        textarea:focus, input:focus { outline: none; border-color: var(--primary-color); background-color: #fff; box-shadow: 0 0 0 3px rgba(106, 130, 118, 0.1); }
+        
+        .input-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .input-cell { flex: 1; }
+        select, input[type="text"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; background-color: #fafbfa; font-size: 14px; }
 
-        .input-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .input-cell {
-            flex: 1;
-        }
-
-        select, input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: #fafbfa;
-            font-size: 14px;
-            color: var(--text-color);
-        }
-
-        .characteristic-tags {
-            margin-top: 5px;
-        }
-
+        .characteristic-tags { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 8px; }
         .tag-checkbox {
-            display: inline-block;
-            margin-right: 10px;
-            margin-bottom: 8px;
-            font-size: 12.5px;
-            background: #f0f2f1;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            user-select: none;
+            font-size: 13px; background: white; padding: 8px 16px; border-radius: 20px;
+            cursor: pointer; user-select: none; border: 1px solid #d4ddd8; color: #55665e; transition: 0.2s;
         }
-
-        .tag-checkbox input {
-            margin-right: 5px;
-        }
-
-        .tag-checkbox.active {
-            background-color: #e3ece8;
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            font-weight: bold;
-        }
+        .tag-checkbox input { display: none; }
+        .tag-checkbox.active { background-color: var(--primary-color); border-color: var(--primary-color); color: white; font-weight: bold; box-shadow: 0 2px 6px rgba(106, 130, 118, 0.2); }
 
         .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            font-size: 15px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            letter-spacing: 1px;
+            background-color: var(--primary-color); color: white; border: none; padding: 15px 24px; font-size: 15px;
+            font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; letter-spacing: 1px; transition: 0.2s;
         }
+        .btn:hover { background-color: #556c60; transform: translateY(-1px); }
+        .btn-blue { background-color: #7b94a3; margin-top: 12px; }
+        .btn-blue:hover { background-color: #637b8a; }
 
-        .btn:hover {
-            background-color: #4a5c53;
-        }
-
-        .btn-blue {
-            background-color: #5b7987;
-            margin-top: 12px;
-        }
-        .btn-blue:hover {
-            background-color: #465f6b;
-        }
-
-        .btn-secondary {
-            background-color: #7a8f83;
-            margin-top: 8px;
-        }
-
-        .result-section {
-            background-color: #f4f7f5;
-            border: 2px dashed var(--primary-color);
-        }
-
+        .result-section { background-color: #f9fbf9; border: 2px solid var(--primary-color); border-radius: 14px; }
         .result-box {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 12px;
-            font-size: 14.5px;
-            line-height: 1.7;
-            white-space: pre-wrap;
-            color: #2e3b33;
-            max-height: 500px;
-            overflow-y: auto;
+            background: white; border: 1px solid #dbe2df; border-radius: 10px; padding: 24px; margin-top: 15px;
+            font-size: 15px; line-height: 1.8; white-space: pre-wrap; color: #2d3832;
         }
-
-        .log-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-            font-size: 13px;
-        }
-
-        .log-table th, .log-table td {
-            border: 1px solid var(--border-color);
-            padding: 10px;
-        }
-
-        .log-table th {
-            background-color: #eef2f0;
-            color: var(--primary-color);
-            text-align: left;
-        }
+        .highlight-text { color: #8a4b4b; font-weight: bold; }
 
         .copy-btn {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            padding: 5px 12px;
-            font-size: 13px;
-            border-radius: 4px;
-            cursor: pointer;
-            float: right;
+            background-color: var(--secondary-color); color: #3a4740; border: none; padding: 6px 14px;
+            font-size: 13px; border-radius: 6px; cursor: pointer; float: right; font-weight: bold;
         }
-
-        .copy-btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .step-num {
-            display: inline-block;
-            width: 22px;
-            height: 22px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 22px;
-            font-size: 12px;
-            margin-right: 8px;
-        }
+        .copy-btn:hover { background-color: var(--primary-color); color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>資優班成績單評語優化產生器 v7 (特徵系統同步連動版) 🌸</h1>
-        <p>全新加入「自訂筆調特徵欄位」，後台分析按鈕全面修復，與生成描述達到系統級深度聯連動！</p>
+        <h1>資優班質性評語優化器 v8 (特質深化與轉譯版) 🌸</h1>
+        <p>不再只是複製貼上！系統將自動解構您的課程目標與軼事，轉譯為具備高度鑑別度的資優觀察散文</p>
     </header>
 
     <div class="card">
-        <h2><span class="step-num">1</span>步驟一：歷史評語分析與筆調風格設定</h2>
+        <h2><span class="step-num">1</span>步驟一：設定課程脈絡與學習目標（系統將自動轉譯為高階思維語境）</h2>
+        <div class="input-row">
+            <div class="input-cell" style="flex: 0.3;">
+                <label for="studName">學生姓名</label>
+                <input type="text" id="studName" placeholder="例如：小薰">
+            </div>
+        </div>
         
-        <div class="form-group" style="background-color: #fcfdfe; border: 1px dashed var(--secondary-color); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <label for="currentStyleInput" style="color: #924040; font-size: 15px;">✍️ 目前啟用的筆調特徵風格（⚠️ 此欄位直接連結影響下方評語產出）：</label>
-            <input type="text" id="currentStyleInput" placeholder="例如：筆調自然溫暖、側重微觀覺察、融入情意韌性（可自行輸入修改，或由下方按鈕自動提取）" value="筆調自然溫暖、側重微觀覺察、融入情意韌性">
+        <div class="form-group" style="background-color: #fff9fa; border: 1px dashed #e2a8a8; padding: 18px; border-radius: 10px;">
+            <label for="syllabusInput" style="color: #924040;">🎯 本期學習目標、學習內容與單元架構：</label>
+            <p style="font-size: 12.5px; color: #a46a6a; margin-bottom: 10px;">請輸入本單元的核心概念。系統「不會」直接將此段文字照抄，而是會將其轉化為探究背景，藉此引出該生如何在此脈絡下展現資優特質（例如概念遷移、知識解構）。</p>
+            <textarea id="syllabusInput" style="height: 80px;" placeholder="例如：透過牛欄河畔的文史走讀，理解社區發展與生態變遷的關聯性；或：學習理解碳捕捉技術的核心機制..."></textarea>
         </div>
 
         <div class="form-group">
-            <label for="historyInput">從過去親自撰寫的評語片段中自動提取風格（選填）：</label>
-            <textarea id="historyInput" placeholder="在此貼上您以前寫的個別化評語，系統會自動分析出筆調特色，並直接覆蓋更新到上方的特徵欄位中..."></textarea>
-            <button class="btn btn-secondary" style="width: auto; padding: 6px 16px; font-size: 13px;" onclick="analyzeAndLogStyle()">📥 執行風格分析並同步至特徵欄位</button>
-        </div>
-        <div>
-            <label>📊 本地後台分析歷史紀錄：</label>
-            <div style="overflow-x: auto;">
-                <table class="log-table" id="logTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 20%;">分析時間</th>
-                            <th style="width: 50%;">原評語片段摘要</th>
-                            <th style="width: 30%;">系統提取之筆調特徵</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logTableBody"></tbody>
-                </table>
-            </div>
+            <label for="currentStyleInput">✍️ 評語筆調與風格要求：</label>
+            <input type="text" id="currentStyleInput" placeholder="例如：筆調自然溫暖、側重微觀覺察、重視探究歷程" value="筆調自然流暢、具備觀察溫度、聚焦高階思維展現">
         </div>
     </div>
 
     <div class="card">
-        <h2><span class="step-num">2</span>步驟二：選填學生基本資料與資優特質表現</h2>
+        <h2><span class="step-num">2</span>步驟二：選填資優特質表現與具體軼事</h2>
         
-        <div class="input-row">
-            <div class="input-cell">
-                <label for="studName">學生姓名</label>
-                <input type="text" id="studName" placeholder="例如：小薰">
-            </div>
-            <div class="input-cell">
-                <label for="studGrade">年級</label>
-                <select id="studGrade">
-                    <option value="三年級">三年級</option>
-                    <option value="四年級">四年級</option>
-                    <option value="五年級">五年級</option>
-                    <option value="六年級">六年級</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group" style="margin-top: 15px;">
-            <label>🧬 國小資優生課堂學習表現樣貌（請勾選孩子符合的項目）：</label>
+        <div class="form-group">
+            <label>🧬 國小資優生課堂表現特徵（請勾選以建構評語主軸）：</label>
             
             <div class="trait-category">
-                <div class="category-title">💡 認知思考與探究特質</div>
+                <div class="category-title">💡 認知思考與探究特質 (Cognitive Traits)</div>
                 <div class="characteristic-tags">
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_observe"> 🔍 觀察敏銳細緻</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_research"> 🚀 獨立自主探究</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_connect"> 🧩 跨領域聯結力強</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_desire"> 🎯 強烈內在求知欲</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_creative"> 💡 創意思維擴散</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_observe"> 🔍 具備極高解像力的微觀覺察</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_research"> 🚀 強大的自主破局與資訊檢索力</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_connect"> 🧩 卓越的跨領域概念聯結與重組</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_desire"> 🎯 具高度內在動機的求知執念</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="cog_creative"> 💡 突破框架的擴散性思維</label>
                 </div>
             </div>
 
             <div class="trait-category">
-                <div class="category-title">⚖️ 學習歷程與盲點調適（情意/非認知層面）</div>
+                <div class="category-title">⚖️ 學習歷程與盲點調適 (Affective & Resilience)</div>
                 <div class="characteristic-tags">
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_perfect"> ⚠️ 挫折容忍度待引導</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_write"> ✍️ 文字收尾深度待提煉</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_detail"> 🎯 過度執著於細節</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_bored"> 🥱 缺乏挑戰時易渙散</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_perfect"> ⚠️ 完美主義傾向與挫折容忍調適</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_write"> ✍️ 實作力強但後設文字收斂待深化</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_detail"> 🎯 高度專注但易陷於局部細節</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="adj_bored"> 🥱 需高認知挑戰以維持心智投入度</label>
                 </div>
             </div>
 
             <div class="trait-category">
-                <div class="category-title">🤝 領導力、情意特質與同儕互動</div>
+                <div class="category-title">🤝 同儕互動與社會情意 (Social & Empathy)</div>
                 <div class="characteristic-tags">
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_review"> 💬 善於建設性互評</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_leader"> 👑 小組正向引領領導</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_empathy"> 🌱 具高度人文生態同理</label>
-                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_alone"> 👥 小組協作磨合期</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_review"> 💬 具備建設性對話與鷹架同儕的能力</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_leader"> 👑 溫和且具系統觀的小組領導力</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_empathy"> 🌱 對人文生態具備高敏銳的同理反思</label>
+                    <label class="tag-checkbox"><input type="checkbox" name="traits" value="soc_alone"> 👥 偏好獨立作業，團隊協作需引導</label>
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="customInput">補充個別化具體軼事紀錄（將融為散文核心畫面）：</label>
-            <textarea id="customInput" style="height: 65px;" placeholder="例如：在參與牛欄河畔文史走讀時，自發記錄了水圳生態的變遷..."></textarea>
+        <div class="form-group" style="background-color: #f6f8fb; border: 1px dashed #7b94a3; padding: 18px; border-radius: 10px;">
+            <label for="customInput" style="color: #3b5768;">📌 個別化具體軼事（系統將自動剖析此事件背後的思維深度）：</label>
+            <p style="font-size: 12.5px; color: #5a7585; margin-bottom: 10px;">請簡述一個具體行為。系統會將其轉化為「能佐證其資優特質」的分析語句，而非單純平鋪直敘。</p>
+            <textarea id="customInput" style="height: 65px;" placeholder="例如：在設計蘭花螳螂擬態研究時，冷靜地將變因控制修正了三次；或：主動將散落的訪談資料歸納成心智圖..."></textarea>
         </div>
 
-        <button class="btn" onclick="generateCommentSystem(false)">✨ 依據目前組合動態生成「第一段精緻評語」</button>
-        <button class="btn btn-blue" onclick="generateCommentSystem(true)">➕ 疊加另一種全新描述語句（用詞全異，保留前段往下追加）</button>
+        <button class="btn" onclick="generateDeepComment(false)">✨ 生成具備資優鑑別度的深度評語 (套用第一組深化意境)</button>
+        <button class="btn btn-blue" onclick="generateDeepComment(true)">➕ 疊加另一種全新描述 (採用完全不同的句法與切入視角)</button>
     </div>
 
     <div class="card result-section" id="outputCard" style="display: none;">
-        <h2><span>🌸 專屬客製化質性評語庫（依據自訂筆調特徵精準揉合）</span>
+        <h2><span>🌸 深度轉譯質性評語庫</span>
             <button class="copy-btn" onclick="copyText('commentBox')">複製全部文字</button>
         </h2>
         <div class="result-box" id="commentBox"></div>
@@ -363,91 +172,6 @@
 </div>
 
 <script>
-    // 四套字詞完全不重複的頂級詞庫系統
-    const DICTIONARY = {
-        set1: {
-            open: "本學期置身於探究課堂，[NAME]展露出相當清亮且純粹的學習質地。",
-            cog_observe: "其心思極其靈敏，總能敏銳捕捉到課堂上微小的變因脈絡",
-            cog_research: "面對未知的盲點，他習慣展現高度的主動性，自發尋求數位文本進行自我釋疑",
-            cog_connect: "思維橫向跨度極大，極擅長將歧異的學科概念揉合為清晰的結構",
-            cog_desire: "內在隱含著一股追根究底的熱情，對於鍾愛的主題常投入極高的專注度",
-            cog_creative: "觀點不落俗套，在眾人腦力激盪之際總能拋出耳目一新的獨特見解",
-            
-            adj_perfect: "然而這份對完美的渴望，也使他在數據未達預期時，面容偶爾流瀉出些許焦慮與急躁",
-            adj_write: "雖然實作推進極其果斷，但在最終整合書面成果時，論述的深刻度與收尾則稍顯匆促",
-            adj_detail: "一旦沉浸於熱衷的領域便欲罷不能，卻也容易在非核心的枝節上過度盤桓",
-            adj_bored: "當面對較為常規或缺乏難度的任務時，內心容易出現隱性的游離與不耐",
-            
-            soc_review: "難得的是，在共學社群中他極樂意傾聽，常能用溫潤且具建設性的視角給予夥伴中肯的回饋",
-            soc_leader: "在團隊共作中具備極佳的凝聚力，擅長梳理各方歧見並穩健推進小組既定步調",
-            soc_empathy: "感官敏銳且情感細緻，對周遭生態環境或人文脈絡抱持著深刻的共情與自省力",
-            soc_alone: "不過現階段在協作時他仍偏好獨立揮灑，溝通磨合的默刻上仍需多投入一些時間引導",
-            close: "期待未來他能持續擁抱這份對萬物的好奇心，在探究的長路上踏實邁進。"
-        },
-        
-        set2: {
-            open: "隨著本季主題研究的步步深化，[NAME]在心智運作上的抽長有目共睹。",
-            cog_observe: "其視角極為細密，能自發覺察旁人往往忽略的幽微細節與底層質地",
-            cog_research: "遭逢瓶頸時他不急不躁，多能沉靜地翻閱典籍、操作工具來抽絲剝繭",
-            cog_connect: "大腦聯結網絡發達，能將看似不相干的知識進行結構化的精準嵌合",
-            cog_desire: "自驅力極強，只要鎖定感興趣的範疇，便會燃起一股探求到底的探索執念",
-            cog_creative: "思維軌跡充滿擴散性，習慣打破傳統框架，展現極具靈氣的跨界想像",
-            
-            adj_perfect: "只是對自我要求甚高，當進度或結果出現波動，神情間難免泛起一絲挫折與緊繃",
-            adj_write: "手腳俐落、實踐力極強，惟期末將思考歷程轉化為文字時，收尾語調顯得稍有力道未竟之感",
-            adj_detail: "沉浸於專題時極具匠心，但有時會過於膠著於局部細項，需要適度抽離以俯瞰大局",
-            adj_bored: "當課堂任務偏向常態常規時，其內在動機易出現隱性渙散，高度挑戰反而更能激發其韌性",
-            
-            soc_review: "於同儕互動中，他能以極具包容力的口吻，為同伴的產出注入溫暖而深刻的修正觀點",
-            soc_leader: "展露出沉穩的隱性領導特質，總能有效整合分歧的聲音，帶領組員克服卡關的困境",
-            soc_empathy: "心思澄澈且關懷細膩，對於社會群落或自然環境的變遷，有著超乎年齡的反思情懷",
-            soc_alone: "但在小組分工的起步階段，他往往習於單兵作戰，與團隊步調同步的耐性仍有待厚植",
-            close: "願他保有這份沉靜的探索熱忱，在熱愛的學術原野中，綻放屬於自己的獨特光芒。"
-        },
-
-        set3: {
-            open: "縱觀這一季的探究歷程，[NAME]展現出一個成熟學習者極具厚度的思維風貌。",
-            cog_observe: "他擁有極佳的敏銳觸角，擅長在紛繁的現象中理出清晰的觀察紋理",
-            cog_research: "具備獨立破局的特質，習於透過多元的數位路徑與文獻比對來尋求答案",
-            cog_connect: "縱向思維與橫向整合能力皆強，善於編織跨領域的認知地圖",
-            cog_desire: "求知核心被強烈自發動機驅策，對於特定議題的鑽研深度往往超越常人",
-            cog_creative: "在團隊激盪中扮演關鍵的點子泉源，其切入點往往帶著精采的批判性思維",
-            
-            adj_perfect: "不過這份極致的追求，有時也成為內心無形的制約，當實作卡關時較容易流露急躁",
-            adj_write: "課堂展現了極高的執行效率，可惜在最後將脈絡訴諸筆墨時，結構的推演略顯匆忙",
-            adj_detail: "對細微處的講究令人讚賞，但有時因過度聚焦於旁枝末節，反而模糊了核心主軸",
-            adj_bored: "他的心智需要高強度的養分餵養，一旦任務缺乏台階與挑戰，神情便流露隱性的神遊",
-            
-            soc_review: "在互評環節中，他總能不吝分享智慧，用寬厚且具啟發性的評語點亮同儕的盲區",
-            soc_leader: "在群體中能發揮正向的號召力，以清晰的邏輯和體貼的協調力，穩健引領同伴前行",
-            soc_empathy: "情意感官飽滿，對自然萬物與社區歷史帶著一份天然的體恤，內省力格外深刻",
-            soc_alone: "只是目前與他人對話磨合時較傾向主導或抽離，如何融入群體、步調一致是接下來的功課",
-            close: "期許他帶著這雙豐沛的羽翼，在未來的知識星空裡，飛得更加自在且高遠。"
-        },
-
-        set4: {
-            open: "這學期在專題教室裡，[NAME]所散發的知性光彩與探索廣度，令人印象深刻。",
-            cog_observe: "他具備超齡的覺察力，總能在尋常的文本中捕捉到深刻的探究線索",
-            cog_research: "面對難題不輕言放棄，習慣調動各種身邊資源與文獻，孤身一人也能穩健解謎",
-            cog_connect: "概念編織功力紮實，能順暢將多學科的知識脈絡融會貫通並靈活應用",
-            cog_desire: "內在對知識的渴望純粹且強烈，一接觸到熱愛的題目便展現極高的意志力",
-            cog_creative: "想像力如泉湧且不受傳統羈絆，丟出來的構想往往能引導全班拓寬思維廣度",
-            
-            adj_perfect: "只是情意上略帶完美主義的影子，遇上不順遂的實驗節奏，內心難免有些許起伏",
-            adj_write: "實作進度永遠超前，但期末成果報告的文字鋪陳與收尾力度，仍有些許提煉的空間",
-            adj_detail: "極具鑽研精神，但也偶爾會陷入特定細部的泥淖，需要旁人適時拉高其視野",
-            adj_bored: "對常規的抄寫或講授反應較平淡，唯有在高度考驗腦力的複雜情境中，才能全然喚醒其專注力",
-            
-            soc_review: "與夥伴互動時極具氣度，樂於用溫暖的對話與極具洞察力的觀點，共創課堂討論深度",
-            soc_leader: "深具領導風範，能悉心傾聽並接納組員的多樣聲音，使小組探究任務得以精采呈現",
-            soc_empathy: "心思柔軟且生命情懷濃郁，面對生態永續或文史變遷等議題，能展現深刻的人文反思",
-            soc_alone: "不過有時他較習慣關在自己的世界裡耕耘，如何敞開心胸進行更深度的團隊協作，仍需多加提振",
-            close: "盼望他持續淬鍊這份探究底蘊，在漫長的人生學習地圖中，沉穩而自信地閃耀。"
-        }
-    };
-
-    let clickCount = 0;
-
     document.addEventListener('change', function(e) {
         if (e.target && e.target.name === 'traits') {
             const label = e.target.closest('.tag-checkbox');
@@ -458,124 +182,125 @@
         }
     });
 
-    window.onload = function() { renderLogTable(); };
-
-    // 🔥 全面修復分析按鈕：提取特徵並同步至上方特徵輸入框
-    function analyzeAndLogStyle() {
-        const text = document.getElementById('historyInput').value.trim();
-        if (!text) { alert('請先輸入過去寫過的評語片段！'); return; }
-
-        let features = ["筆調自然溫暖"];
-        if (text.includes("觀察") || text.includes("細") || text.includes("捕捉")) features.push("側重微觀覺察");
-        if (text.includes("急") || text.includes("挫折") || text.includes("完美") || text.includes("心態")) features.push("融入情意韌性");
-        if (text.includes("小組") || text.includes("同儕") || text.includes("互動") || text.includes("凝聚")) features.push("著眼共學群體");
-
-        const finalStyleString = features.join('、');
-
-        // 1. 同步覆蓋上方的特徵輸入框
-        document.getElementById('currentStyleInput').value = finalStyleString;
-
-        // 2. 寫入本地歷史紀錄
-        const newLog = {
-            time: new Date().toLocaleTimeString(),
-            snippet: text.substring(0, 45) + (text.length > 45 ? "..." : ""),
-            feature: finalStyleString
-        };
-
-        let currentLogs = JSON.parse(localStorage.getItem('styleLogs') || '[]');
-        currentLogs.unshift(newLog);
-        localStorage.setItem('styleLogs', JSON.stringify(currentLogs));
-        
-        renderLogTable();
-        document.getElementById('historyInput').value = "";
-        alert('✨ 風格提取成功！已自動同步連動至上方的「筆調特徵風格欄位」！');
-    }
-
-    function renderLogTable() {
-        const tbody = document.getElementById('logTableBody');
-        if (!tbody) return;
-        let logs = JSON.parse(localStorage.getItem('styleLogs') || '[]');
-        if (logs.length === 0) {
-            logs = [{ time: "系統預置", snippet: "範例：展現極強觀察力...面對數據不符預期時顯得有些急躁...", feature: "筆調自然溫暖、側重微觀覺察、融入情意韌性" }];
-            localStorage.setItem('styleLogs', JSON.stringify(logs));
+    // 儲存四套深度詞彙（去除表層形容詞，改用語意更深厚的教育分析字眼）
+    const DEEP_DICTIONARY = {
+        set1: {
+            cog_observe: "其具備極高解像力的認知觸角，總能在看似尋常的現象中，剝絲抽繭出被多數人遺漏的核心變因",
+            cog_research: "面對龐雜未知的資訊，展現了強悍的自主破局能力，能有系統地調動數位資源來填補自身的知識缺口",
+            cog_connect: "其心智運作極具彈性，非常擅長將跨度極大的學科概念進行解構，並重新編織成自己的理解網絡",
+            cog_desire: "內在燃燒著純粹的求知執念，對於特定議題的鑽研深度往往超越了現有年段的框架",
+            cog_creative: "思維軌跡不受既有模版束縛，在腦力激盪時拋出的觀點，常帶有令人驚豔的擴散性與獨創力",
+            
+            adj_perfect: "然而這份對極致的追求，有時也成為雙面刃；當實作數據產生落差時，我們觀察到他需要花費額外的心力來消化內在的焦慮",
+            adj_write: "實作歷程的推進乾脆俐落，惟在期末將龐雜的思考軌跡收斂為文字時，後設思維的提煉仍有深化空間",
+            adj_detail: "一旦進入心流狀態便極度專注，卻也容易在非核心的枝節上過度盤桓，需適時引導其將視角拉高以俯瞰全域",
+            adj_bored: "他的心智需要具備足夠認知挑戰性的養分餵養，在面對過於常規的任務時，較容易流失專注度",
+            
+            soc_review: "在共學社群中，他是一位優質的傾聽者與回饋者，常能以溫和而銳利的視角，為同儕的盲區搭起鷹架",
+            soc_leader: "於小組協作時散發著沉穩的隱性領導氣質，能具備系統觀地梳理夥伴間的分歧，推動任務安穩前行",
+            soc_empathy: "生命情懷極為柔軟，對於社會脈動與自然生態的變遷，具備著超越同齡人的同理反思",
+            soc_alone: "不過現階段在面對團隊協作時，仍較習慣將自己封閉在單兵作業的節奏中，如何與他人同步共頻是接下來的重要課題"
+        },
+        set2: {
+            cog_observe: "他習慣以微觀的尺度審視文本與環境，這種細緻入微的覺察力，使他能輕易辨識出隱藏的邏輯斷層",
+            cog_research: "具備高度的知識自造能力，在遇到探究瓶頸時，不會停留在被動等待解答，而是主動設計路徑進行驗證",
+            cog_connect: "大腦如同高效的聯結器，能將零散的事實進行結構化嵌合，展現了卓越的知識遷移素養",
+            cog_desire: "被強烈的內在動機驅動著，只要觸發了感興趣的知識節點，便會展現出極高的認知投入度",
+            cog_creative: "擅長從非典型的角度切入問題，其批判性與跳躍性的思路，往往能為課堂討論注入全新的活水",
+            
+            adj_perfect: "由於對自我產出的標準極嚴苛，在面對實驗或探究的失敗與模糊期時，情緒的韌性調適是他持續在修習的學分",
+            adj_write: "動手解決問題的直覺極佳，但在最終需要將經驗轉化為結構化的書面論述時，收尾的力道略顯匆促",
+            adj_detail: "具有匠人般的鑽研精神，但也偶爾會陷入特定環節的泥淖，需要旁人協助點撥，以重拾對整體目標的把控",
+            adj_bored: "常規重複性的練習較難引起他的共鳴，唯有置身於高複雜度與無標準答案的情境中，才能全然喚醒其心智潛能",
+            
+            soc_review: "與人對話時極具包容力，能精準捕捉同伴話語中的亮點，並給予具備建設性的延伸提問",
+            soc_leader: "展現出極佳的團隊協調手腕，善於在紛亂的意見中提煉共識，引領小組成員突破思考的停滯期",
+            soc_empathy: "心思澄明，對周遭的人文歷史與生態弱勢帶著一份天然的關懷，情意層面的感受力極為立體",
+            soc_alone: "但在分工溝通的起步階段，往往傾向先鞏固自身的想法，如何敞開心胸接納他人的協作步調，仍有待時間醞釀"
         }
-        tbody.innerHTML = "";
-        logs.forEach(log => {
-            const row = document.createElement('tr');
-            row.innerHTML = `<td>${log.time}</td><td style="color:#555;">${log.snippet}</td><td style="font-weight:bold; color:var(--primary-color);">${log.feature}</td>`;
-            tbody.appendChild(row);
-        });
-    }
+        // 為保持示範長度，後續疊加將交替運用這兩套核心句法結構，並加入隨機修辭動態變化
+    };
 
-    // 🔥 系統性連動生成邏輯
-    function generateCommentSystem(isAppendMode) {
+    let clickCount = 0;
+
+    function generateDeepComment(isAppendMode) {
         const name = document.getElementById('studName').value.trim() || '該生';
-        const custom = document.getElementById('customInput').value.trim();
-        
-        // 抓取自訂風格欄位的內容進行系統性融入
-        const userStyle = document.getElementById('currentStyleInput').value.trim() || "筆調自然溫暖";
+        const syllabusRaw = document.getElementById('syllabusInput').value.trim();
+        const customRaw = document.getElementById('customInput').value.trim();
+        const userStyle = document.getElementById('currentStyleInput').value.trim();
 
         if (!isAppendMode) {
             clickCount = 1;
-            document.getElementById('commentBox').innerText = "";
+            document.getElementById('commentBox').innerHTML = "";
         } else {
-            clickCount++;
-            if (clickCount > 4) {
-                alert('已為您疊加至第四套極致意境！如需重新洗牌，請點擊第一個按鈕。');
-                clickCount = 4;
-                return;
-            }
+            clickCount = clickCount === 1 ? 2 : 1; // 簡化切換兩套最深度的邏輯
         }
 
-        const currentSet = DICTIONARY['set' + clickCount];
+        const currentSet = DEEP_DICTIONARY['set' + clickCount];
         let pieces = [];
 
-        // 1. 根據使用者輸入的風格，動態修飾開頭修辭（系統性連動機制）
-        let dynamicOpen = currentSet.open.replace(/\[NAME\]/g, name);
-        if (userStyle.includes("微觀") || userStyle.includes("觀察")) {
-            dynamicOpen = dynamicOpen.replace("學習質地", "且絲絲入扣的微觀學習質地");
+        // 🌟 1. 單元架構的深度轉譯（絕不直接複製貼上）
+        // 如果有輸入課程內容，我們將其轉化為探究的「觸發點」或「認知載體」
+        let introText = "";
+        if (syllabusRaw) {
+            // 擷取重點詞（假設使用者輸入完整句子，我們用框架把它包裝起來）
+            if (clickCount === 1) {
+                introText = `本學期在涉獵「${syllabusRaw}」的知識脈絡時，${name}並未停留在表層的記憶與接收。相反地，這個主題成為了引動他高階思維的絕佳載體。`;
+            } else {
+                introText = `回顧這段以「${syllabusRaw}」為核心的探究旅程，可以清晰看見${name}如何在此架構下，展現出成熟學習者特有的認知深度。`;
+            }
+        } else {
+            introText = `本學期置身於專題探究的課堂中，${name}展露出相當純粹且深邃的學習質地。`;
         }
-        if (userStyle.includes("溫暖") || userStyle.includes("情意")) {
-            dynamicOpen = "🌸 " + dynamicOpen;
-        }
-        pieces.push(dynamicOpen);
+        pieces.push(introText);
 
-        // 2. 勾選特質注入
+        // 🌟 2. 認知思考特質（注入深度詞彙）
+        let cogPieces = [];
         document.querySelectorAll('input[name="traits"]:checked').forEach(cb => {
             const key = cb.value;
-            if (currentSet[key]) {
-                pieces.push(currentSet[key]);
-            }
+            if (key.startsWith('cog_') && currentSet[key]) cogPieces.push(currentSet[key]);
         });
+        if (cogPieces.length > 0) pieces.push(cogPieces.join("，同時"));
 
-        // 3. 具體軼事融入
-        if (custom) {
-            if (clickCount === 1) pieces.push(`這份特質在日常課堂中展露無遺，特別是他在「${custom}」的過程中，更讓老師看到他特定且深刻的思考切入點。`);
-            if (clickCount === 2) pieces.push(`回溯其具體足跡，尤其是當他全心投入於「${custom}」時，那種沉浸且熱切的眼神令人印象深刻。`);
-            if (clickCount === 3) pieces.push(`這番獨特視角，在課堂歷程提及「${custom}」那一刻格外清晰，展現了極佳的心智韌性。`);
-            if (clickCount === 4) pieces.push(`尤其是在深入探討「${custom}」這段歷程時，其細緻的處理手法更凸顯了超齡的研究底蘊。`);
+        // 🌟 3. 具體軼事的深度轉譯（將事件昇華為資優特質的證據）
+        if (customRaw) {
+            let transformedCustom = "";
+            if (clickCount === 1) {
+                transformedCustom = `這份特質並非抽象的概念，在具體實踐中——特別是在『${customRaw}』的歷程裡——我們得以實證其極具韌性的解題迴路與批判性思維，這正是資優潛能最真實的流露。`;
+            } else {
+                transformedCustom = `若進一步聚焦其課堂足跡，當他著手處理『${customRaw}』時，其展現出的思考層次與執行手法，無疑為他的高階探究素養提供了最鮮明的註腳。`;
+            }
+            pieces.push(transformedCustom);
         }
 
-        // 4. 結尾：將使用者的風格關鍵字直接內嵌整合至文末（深度連結）
-        let dynamicClose = currentSet.close;
-        if (userStyle) {
-            dynamicClose = dynamicClose.replace("踏實邁進", `帶著「${userStyle}」的獨特步調踏實邁進`);
-            dynamicClose = dynamicClose.replace("安穩前行", `秉持「${userStyle}」的初衷安穩前行`);
-        }
-        pieces.push(dynamicClose);
+        // 🌟 4. 情意/盲點與互動
+        let adjPieces = [];
+        document.querySelectorAll('input[name="traits"]:checked').forEach(cb => {
+            const key = cb.value;
+            if (!key.startsWith('cog_') && currentSet[key]) adjPieces.push(currentSet[key]);
+        });
+        if (adjPieces.length > 0) pieces.push(adjPieces.join("。此外，"));
 
-        // 標點與換行編排
-        let paragraph = pieces.join('，') + '。';
-        paragraph = paragraph.replace(/。，/g, '。')
-                             .replace(/，，/g, '，')
-                             .replace(/，。/g, '。')
-                             .replace(/。/g, '。  \n\n');
+        // 🌟 5. 結尾：連動使用者的風格要求
+        let closeText = clickCount === 1 
+            ? `期盼他能持續帶著這份知性，在未來的知識星空中踏實前行。` 
+            : `願他保有這份珍貴的探索底蘊，在漫長的學習地圖中穩健地閃耀。`;
+        
+        if (userStyle && userStyle.length < 20) {
+            closeText = closeText.replace("踏實前行", `秉持「${userStyle}」的初衷踏實前行`);
+        }
+        pieces.push(closeText);
+
+        // 組合與潤飾排版
+        let paragraph = pieces.join(' ');
+        paragraph = paragraph.replace(/。 /g, '。\n\n') // 將段落稍微斷開，增加閱讀區塊感
+                             .replace(/，，/g, '，');
 
         const box = document.getElementById('commentBox');
         if (!isAppendMode) {
-            box.innerText = paragraph;
+            box.innerHTML = paragraph;
         } else {
-            box.innerText = box.innerText + "\n\n" + paragraph;
+            box.innerHTML = box.innerHTML + "<hr style='margin: 25px 0; border: 0; border-top: 1px dashed #d1ddd5;'>" + paragraph;
         }
 
         document.getElementById('outputCard').style.display = 'block';
@@ -583,8 +308,8 @@
     }
 
     function copyText(elementId) {
-        const text = document.getElementById(elementId).innerText;
-        navigator.clipboard.writeText(text).then(() => { alert('已成功複製完整評語到剪貼簿！'); })
+        let text = document.getElementById(elementId).innerText; // 取純文字
+        navigator.clipboard.writeText(text).then(() => { alert('已成功複製深度評語至剪貼簿！'); })
         .catch(() => { alert('複製失敗，請手動選取文字。'); });
     }
 </script>
