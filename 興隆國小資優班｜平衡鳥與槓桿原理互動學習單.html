@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>興隆國小資優班｜平衡鳥與槓桿原理互動學習單</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #cbd5e1;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 1120px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        header {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+        .header-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.45rem;
+            color: #0f172a;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        .student-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .info-field {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .info-field input {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .toolbar {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .tool-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .draggable-tool {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+        }
+        .draggable-tool:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+        .tool-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+        }
+        .icon-paperclip {
+            border: 2px solid #64748b;
+            border-radius: 9px;
+            width: 22px;
+            height: 12px;
+        }
+        .icon-binder {
+            background: #1e293b;
+            border-top: 4px solid #94a3b8;
+        }
+        select, button {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            background: white;
+            color: var(--text);
+            transition: all 0.15s;
+        }
+        button:hover { background: #f1f5f9; }
+        button.primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        button.primary:hover { background: var(--primary-hover); }
+        button.success {
+            background: var(--success);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        button.success:hover { background: #15803d; }
+        button.danger {
+            background: #fee2e2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+            font-weight: 500;
+        }
+        button.danger:hover { background: #fecaca; }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 860px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #0f172a;
+        }
+        canvas {
+            width: 100%;
+            height: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #ffffff;
+            touch-action: none;
+        }
+        .view-tabs {
+            display: flex;
+            gap: 6px;
+        }
+        .tab-btn {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .metric-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+        .metric-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 2px;
+        }
+        .metric-val {
+            font-size: 0.98rem;
+            font-weight: 700;
+        }
+        .status-banner {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.92rem;
+            text-align: center;
+        }
+        .status-ok { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .status-tilt { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .status-fail { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* 六次嘗試紀錄區 */
+        .trials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 8px;
+        }
+        @media (max-width: 900px) {
+            .trials-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .trials-grid { grid-template-columns: 1fr; }
+        }
+        .trial-card {
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .trial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: #1e3a8a;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 6px;
+        }
+        .capture-btn {
+            background: #eff6ff;
+            color: var(--primary);
+            border: 1px solid #bfdbfe;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+        .capture-btn:hover {
+            background: #dbeafe;
+        }
+        .trial-screenshot {
+            width: 100%;
+            height: 150px;
+            background: #ffffff;
+            border: 1px dashed #94a3b8;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .trial-screenshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .trial-screenshot span {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            text-align: center;
+            padding: 8px;
+        }
+        .trial-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.85rem;
+        }
+        .trial-row label {
+            font-weight: 600;
+            color: #475569;
+        }
+        .trial-row input, .trial-row select, .trial-row textarea {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+
+        /* 思考與測驗區 */
+        .quiz-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .quiz-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 14px;
+        }
+        .quiz-q {
+            font-weight: 700;
+            font-size: 0.98rem;
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+        .quiz-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .badge-mc { background: #dbeafe; color: #1e40af; }
+        .badge-open { background: #fef3c7; color: #92400e; }
+
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .mc-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.92rem;
+        }
+        .mc-option:hover { background: #eff6ff; }
+        .quiz-textarea {
+            width: 100%;
+            min-height: 75px;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .voice-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            gap: 8px;
+        }
+        .voice-btn {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 5px 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .voice-btn.recording {
+            background: #dc2626;
+            color: white;
+            animation: pulse 1.2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        .mc-feedback {
+            margin-top: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: none;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        /* 匯出與寄送區 */
+        .export-bar {
+            background: #eff6ff;
+            border: 1.5px solid #93c5fd;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .export-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-top">
+            <div>
+                <h1>🐦 縣立興隆國民小學資優班｜數理實作：平衡鳥實驗</h1>
+                <div class="subtitle">自由配置迴紋針與長尾夾，觀察槓桿力矩、重心位置與平衡狀態</div>
+            </div>
+            <div class="student-info">
+                <div class="info-field">
+                    <label for="studentName">姓名：</label>
+                    <input type="text" id="studentName" placeholder="請輸入學生姓名" style="width:130px;">
+                </div>
+                <div class="info-field">
+                    <label for="expDate">日期：</label>
+                    <input type="date" id="expDate">
+                </div>
+            </div>
+        </div>
+        <div style="font-size:0.88rem; color:#475569; line-height:1.5;">
+            <strong>實驗任務：</strong>在下方模擬器中，自由拖曳<strong>迴紋針 (1.0 g)</strong> 或 <strong>長尾夾 (3.0 g)</strong> 夾在鳥身不同位置，使鳥嘴立於支點上達到平衡。完成實驗後，請截圖記錄六次嘗試，並回答下方的五題原理思考題！
+        </div>
+    </header>
+
+    <!-- 工具列 -->
+    <div class="toolbar">
+        <div class="tool-items">
+            <span style="font-size:0.9rem; font-weight:600; color:#475569;">拖曳或點擊新增：</span>
+            <div class="draggable-tool" id="tool-paperclip" draggable="true" onclick="addWeightCenter('paperclip')">
+                <span class="tool-icon icon-paperclip"></span>
+                迴紋針 (1.0 g)
+            </div>
+            <div class="draggable-tool" id="tool-binder" draggable="true" onclick="addWeightCenter('binder')">
+                <span class="tool-icon icon-binder"></span>
+                長尾夾 (3.0 g)
+            </div>
+            <label style="display:flex; align-items:center; gap:5px; font-size:0.85rem; cursor:pointer; margin-left:6px;">
+                <input type="checkbox" id="snapEdge" checked> 邊緣智慧吸附
+            </label>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+            <select id="presetSelect" onchange="loadPreset(this.value)">
+                <option value="">-- 參考範例配置 --</option>
+                <option value="empty">空白紙鳥 (無夾子)</option>
+                <option value="exp1">範例 A：2個迴紋針 (翼尖)</option>
+                <option value="exp2">範例 B：2個長尾夾 (翼前緣 → 尾巴朝上)</option>
+                <option value="exp3">範例 C：翼後側配置 (尾巴朝下)</option>
+                <option value="exp6">範例 D：單側1個長尾夾 (失衡)</option>
+            </select>
+            <button class="danger" onclick="clearWeights()">全部清除</button>
+        </div>
+    </div>
+
+    <!-- 互動模擬器雙畫布 -->
+    <div class="main-grid">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">1. 俯視配置圖（拖曳夾子調整位置）</span>
+                <span style="font-size:0.8rem; color:#64748b;">紅點：支點(鳥嘴) ｜ 綠十字：總重心</span>
+            </div>
+            <canvas id="topCanvas" width="500" height="400"></canvas>
+            <div style="margin-top:8px; font-size:0.82rem; color:#64748b; display:flex; justify-content:space-between;">
+                <span>💡 拖出紙鳥外或雙擊夾子可移除</span>
+                <span id="itemCount">目前夾子數：0</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">2. 支點平衡動態模擬</span>
+                <div class="view-tabs">
+                    <button class="tab-btn active" id="btnFront" onclick="setView('front')">正面視角 (左右滾轉)</button>
+                    <button class="tab-btn" id="btnSide" onclick="setView('side')">側面視角 (前後俯仰)</button>
+                </div>
+            </div>
+            <canvas id="simCanvas" width="460" height="295"></canvas>
+            <div style="margin-top:8px; font-size:0.82rem; color:#64748b; display:flex; justify-content:space-between; align-items:center;">
+                <span>👆 點擊模擬畫布可輕撥測試穩定度</span>
+                <button style="padding:3px 8px; font-size:0.8rem;" onclick="nudgeBird()">輕撥測試</button>
+            </div>
+
+            <div id="statusBanner" class="status-banner status-fail">
+                ❌ 失衡：重心落在支點後方，平衡鳥向後翻落！
+            </div>
+
+            <div class="metrics">
+                <div class="metric-box">
+                    <div class="metric-label">左右力矩差 (左 vs 右)</div>
+                    <div class="metric-val" id="metricLR">0.0 g·cm (完美對稱)</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">前後重心偏移 (相對於鳥嘴)</div>
+                    <div class="metric-val" id="metricFB">後方 5.6 cm</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">平衡姿態預測</div>
+                    <div class="metric-val" id="metricPosture">無法平衡 (掉落)</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">總質量 (紙鳥 4.0g + 夾子)</div>
+                    <div class="metric-val" id="metricMass">4.0 g</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 六次嘗試實驗紀錄表 -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">📋 實驗過程紀錄表（請完成並截圖記錄你的六次嘗試）</span>
+            <span style="font-size:0.85rem; color:#475569;">在上方模擬器調整好位置後，點擊各格的「📸 擷取目前畫面」即可自動存入圖示！</span>
+        </div>
+        <div class="trials-grid" id="trialsContainer"></div>
+    </div>
+
+    <!-- 五題物理原理思考與口述題 -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">🧠 物理原理思考與口述表達（共 5 題）</span>
+            <button class="primary" onclick="checkMultipleChoice()" style="padding:6px 12px; font-size:0.85rem;">對答案（檢查選擇題）</button>
+        </div>
+
+        <div class="quiz-list">
+            <!-- 第1題：選擇題 -->
+            <div class="quiz-item">
+                <div class="quiz-q"><span class="quiz-badge badge-mc">第 1 題｜選擇題</span>在槓桿原理中，當我們將平衡鳥的鳥嘴尖端立於手指上並保持平穩時，「鳥嘴尖端」扮演什麼角色？</div>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q1" value="A"> A. 施力點（產生向下拉力的位置）</label>
+                    <label class="mc-option"><input type="radio" name="q1" value="B"> B. 支點（支撐整隻鳥並作為轉動中心的點）</label>
+                    <label class="mc-option"><input type="radio" name="q1" value="C"> C. 抗力點（承受翅膀重量的位置）</label>
+                    <label class="mc-option"><input type="radio" name="q1" value="D"> D. 力臂（重心到翅膀尖端的距離）</label>
+                </div>
+                <div class="mc-feedback" id="fb-q1"></div>
+            </div>
+
+            <!-- 第2題：選擇題 -->
+            <div class="quiz-item">
+                <div class="quiz-q"><span class="quiz-badge badge-mc">第 2 題｜選擇題</span>如果左翼夾了 1 個「長尾夾 (3g)」，距離中軸 4 公分；右翼改夾「迴紋針 (1g)」，請問右翼要夾幾個迴紋針、放在距離中軸幾公分處，左右力矩才會平衡？</div>
+                <div class="mc-options">
+                    <label class="mc-option"><input type="radio" name="q2" value="A"> A. 1 個迴紋針，距離中軸 4 公分</label>
+                    <label class="mc-option"><input type="radio" name="q2" value="B"> B. 2 個迴紋針，距離中軸 5 公分</label>
+                    <label class="mc-option"><input type="radio" name="q2" value="C"> C. 2 個迴紋針，距離中軸 6 公分（2g × 6cm = 12 g·cm）</label>
+                    <label class="mc-option"><input type="radio" name="q2" value="D"> D. 3 個迴紋針，距離中軸 8 公分</label>
+                </div>
+                <div class="mc-feedback" id="fb-q2"></div>
+            </div>
+
+            <!-- 第3題：口述/申論題 -->
+            <div class="quiz-item">
+                <div class="quiz-q"><span class="quiz-badge badge-open">第 3 題｜原理口述</span>請用你自己的話說明：原本沒有夾任何東西的紙鳥放上手指會向後掉落，為什麼在雙翼加上迴紋針或長尾夾後，就能穩穩站在鳥嘴上保持平衡？請試著提到「支點」、「重心」與「槓桿原理」。</div>
+                <textarea class="quiz-textarea" id="q3" placeholder="請輸入你的想法，或點擊下方「語音口述輸入」直接用說的..."></textarea>
+                <div class="voice-bar">
+                    <button type="button" class="voice-btn" onclick="toggleVoice('q3', this)">🎤 語音口述輸入</button>
+                    <span style="font-size:0.8rem; color:#64748b;">提示：思考夾子的重量把整隻鳥的「總重心」拉到了哪裡？</span>
+                </div>
+            </div>
+
+            <!-- 第4題：觀察分析題 -->
+            <div class="quiz-item">
+                <div class="quiz-q"><span class="quiz-badge badge-open">第 4 題｜觀察比較</span>在你的六次嘗試中，為什麼有時候平衡鳥成功平衡時「尾巴朝上」，有時候卻是「尾巴朝下」？夾子的位置改變了什麼？</div>
+                <textarea class="quiz-textarea" id="q4" placeholder="請描述夾子位置（靠前或靠後）與尾巴朝向之間的關係..."></textarea>
+                <div class="voice-bar">
+                    <button type="button" class="voice-btn" onclick="toggleVoice('q4', this)">🎤 語音口述輸入</button>
+                    <span style="font-size:0.8rem; color:#64748b;">提示：觀察側面視角中「總重心」相對於鳥嘴的前後位置。</span>
+                </div>
+            </div>
+
+            <!-- 第5題：動態穩定思考題 -->
+            <div class="quiz-item">
+                <div class="quiz-q"><span class="quiz-badge badge-open">第 5 題｜進階思考</span>當我們用手輕輕撥動平衡鳥讓它旋轉或上下搖晃時，為什麼它不會掉下來，反而會慢慢擺動並回到原來的平衡狀態？</div>
+                <textarea class="quiz-textarea" id="q5" placeholder="請思考平衡鳥翅膀下垂的形狀，讓總重心的「高度」位在支點的上方還是下方？"></textarea>
+                <div class="voice-bar">
+                    <button type="button" class="voice-btn" onclick="toggleVoice('q5', this)">🎤 語音口述輸入</button>
+                    <span style="font-size:0.8rem; color:#64748b;">提示：比較「總重心高度」與「鳥嘴支點高度」的高低關係。</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 匯出與寄給老師區 -->
+    <div class="export-bar">
+        <div>
+            <div style="font-weight:700; font-size:1.05rem; color:#1e3a8a;">📤 完成學習單！匯出並交給老師</div>
+            <div style="font-size:0.85rem; color:#475569; margin-top:2px;">
+                老師信箱：<input type="email" id="teacherEmail" placeholder="選填，例如 teacher@school.edu.tw" style="padding:4px 8px; border:1px solid #93c5fd; border-radius:6px; font-size:0.85rem; width:220px;">
+            </div>
+        </div>
+        <div class="export-actions">
+            <button class="primary" onclick="exportHtmlReport()">📄 匯出完整圖文學習單 (.html 可含截圖寄送)</button>
+            <button class="success" onclick="sendEmailToTeacher()">✉️ 一鍵開啟 Email 寄給老師</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 初始化日期為今天
+document.getElementById('expDate').valueAsDate = new Date();
+
+const topCanvas = document.getElementById('topCanvas');
+const topCtx = topCanvas.getContext('2d');
+const simCanvas = document.getElementById('simCanvas');
+const simCtx = simCanvas.getContext('2d');
+
+const SCALE = 21;
+const ORIGIN_X = topCanvas.width / 2;
+const ORIGIN_Y = 60;
+
+const birdPolygon = [
+    {x: 0, y: 0},
+    {x: -1.4, y: 2.8},
+    {x: -6.5, y: 1.8},
+    {x: -10.2, y: 0.4},
+    {x: -9.6, y: 3.2},
+    {x: -5.2, y: 5.8},
+    {x: -1.8, y: 7.5},
+    {x: -2.6, y: 13.5},
+    {x: 0, y: 12.2},
+    {x: 2.6, y: 13.5},
+    {x: 1.8, y: 7.5},
+    {x: 5.2, y: 5.8},
+    {x: 9.6, y: 3.2},
+    {x: 10.2, y: 0.4},
+    {x: 6.5, y: 1.8},
+    {x: 1.4, y: 2.8}
+];
+
+const BIRD_MASS = 4.0;
+const BIRD_COM = { x: 0, y: 5.6 };
+
+let weights = [];
+let nextId = 1;
+let draggingItem = null;
+let viewMode = 'front';
+
+let physics = {
+    roll: 0, rollVel: 0,
+    pitch: 0, pitchVel: 0,
+    targetRoll: 0,
+    targetPitch: 0,
+    isStable: false,
+    comX: 0,
+    comY: 5.6,
+    comZ: -1.5,
+    totalMass: 4.0,
+    torqueLR: 0
+};
+
+// 儲存六次嘗試資料
+const trialsData = Array.from({ length: 6 }, (_, i) => ({
+    index: i + 1,
+    itemsDesc: '',
+    status: '成功（尾巴朝下）',
+    note: '',
+    screenshot: ''
+}));
+
+function renderTrialsGrid() {
+    const container = document.getElementById('trialsContainer');
+    const chineseNums = ['一', '二', '三', '四', '五', '六'];
+    container.innerHTML = trialsData.map((t, idx) => `
+        <div class="trial-card">
+            <div class="trial-header">
+                <span>第${chineseNums[idx]}次嘗試</span>
+                <button type="button" class="capture-btn" onclick="captureTrial(${idx})">📸 擷取目前畫面</button>
+            </div>
+            <div class="trial-screenshot" id="shot-box-${idx}">
+                <span>尚未截圖<br>調整上方模擬器後點擊「擷取」</span>
+            </div>
+            <div class="trial-row">
+                <label>使用物品與位置：</label>
+                <input type="text" id="trial-items-${idx}" placeholder="例：2個長尾夾夾在雙翼前緣" oninput="trialsData[${idx}].itemsDesc = this.value">
+            </div>
+            <div class="trial-row">
+                <label>平衡鳥狀態：</label>
+                <select id="trial-status-${idx}" onchange="trialsData[${idx}].status = this.value">
+                    <option value="成功（尾巴朝上）">成功（尾巴朝上）</option>
+                    <option value="成功（尾巴朝下）">成功（尾巴朝下）</option>
+                    <option value="成功（水平展翅）">成功（水平展翅）</option>
+                    <option value="成功（轉圈時翅膀上下抖動）">成功（轉圈時翅膀上下抖動）</option>
+                    <option value="失敗（向左/右側翻落）">失敗（向左/右側翻落）</option>
+                    <option value="失敗（向後/向前掉落）">失敗（向後/向前掉落）</option>
+                </select>
+            </div>
+            <div class="trial-row">
+                <label>觀察補充：</label>
+                <input type="text" id="trial-note-${idx}" placeholder="選填觀察現象..." oninput="trialsData[${idx}].note = this.value">
+            </div>
+        </div>
+    `).join('');
+}
+renderTrialsGrid();
+
+// 擷取目前兩個畫布合併圖示存入對應嘗試
+function captureTrial(idx) {
+    // 確保最新畫面已繪製
+    drawTopView();
+    drawSimView();
+
+    const mergeCanvas = document.createElement('canvas');
+    mergeCanvas.width = topCanvas.width + simCanvas.width;
+    mergeCanvas.height = Math.max(topCanvas.height, simCanvas.height);
+    const mCtx = mergeCanvas.getContext('2d');
+    mCtx.fillStyle = '#ffffff';
+    mCtx.fillRect(0, 0, mergeCanvas.width, mergeCanvas.height);
+    mCtx.drawImage(topCanvas, 0, 0);
+    mCtx.drawImage(simCanvas, topCanvas.width, (mergeCanvas.height - simCanvas.height) / 2);
+
+    const dataUrl = mergeCanvas.toDataURL('image/png');
+    trialsData[idx].screenshot = dataUrl;
+
+    const box = document.getElementById(`shot-box-${idx}`);
+    box.innerHTML = `<img src="${dataUrl}" alt="第${idx+1}次嘗試截圖">`;
+
+    // 自動帶入使用數量與狀態建議
+    const pcCount = weights.filter(w => w.type === 'paperclip').length;
+    const bcCount = weights.filter(w => w.type === 'binder').length;
+    let autoItems = [];
+    if (pcCount > 0) autoItems.push(`${pcCount} 個迴紋針`);
+    if (bcCount > 0) autoItems.push(`${bcCount} 個長尾夾`);
+    const itemInput = document.getElementById(`trial-items-${idx}`);
+    if (!itemInput.value) {
+        itemInput.value = autoItems.length ? autoItems.join('、') : '無夾子';
+        trialsData[idx].itemsDesc = itemInput.value;
+    }
+
+    const statusSel = document.getElementById(`trial-status-${idx}`);
+    if (!physics.isStable) {
+        statusSel.value = Math.abs(physics.targetRoll) > 0.85 ? '失敗（向左/右側翻落）' : '失敗（向後/向前掉落）';
+    } else if (physics.targetPitch > 0.12) {
+        statusSel.value = '成功（尾巴朝上）';
+    } else if (physics.targetPitch < -0.12) {
+        statusSel.value = '成功（尾巴朝下）';
+    } else {
+        statusSel.value = '成功（水平展翅）';
+    }
+    trialsData[idx].status = statusSel.value;
+}
+
+function cmToPx(x, y) {
+    return { x: ORIGIN_X + x * SCALE, y: ORIGIN_Y + y * SCALE };
+}
+function pxToCm(px, py) {
+    return { x: (px - ORIGIN_X) / SCALE, y: (py - ORIGIN_Y) / SCALE };
+}
+
+function isPointInBird(x, y) {
+    let inside = false;
+    for (let i = 0, j = birdPolygon.length - 1; i < birdPolygon.length; j = i++) {
+        const xi = birdPolygon[i].x, yi = birdPolygon[i].y;
+        const xj = birdPolygon[j].x, yj = birdPolygon[j].y;
+        const intersect = ((yi > y) !== (yj > y)) &&
+            (x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+}
+
+function getClosestEdge(x, y) {
+    let minDist = Infinity;
+    let bestPt = { x, y };
+    let bestAngle = 0;
+    for (let i = 0; i < birdPolygon.length; i++) {
+        const a = birdPolygon[i];
+        const b = birdPolygon[(i + 1) % birdPolygon.length];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const len2 = dx * dx + dy * dy;
+        let t = ((x - a.x) * dx + (y - a.y) * dy) / len2;
+        t = Math.max(0, Math.min(1, t));
+        const projX = a.x + t * dx;
+        const projY = a.y + t * dy;
+        const dist = Math.hypot(x - projX, y - projY);
+        if (dist < minDist) {
+            minDist = dist;
+            bestPt = { x: projX, y: projY };
+            bestAngle = Math.atan2(dy, dx);
+        }
+    }
+    return { pt: bestPt, dist: minDist, angle: bestAngle };
+}
+
+function addWeight(type, x, y) {
+    const mass = type === 'paperclip' ? 1.0 : 3.0;
+    let finalX = x, finalY = y, angle = 0;
+    if (document.getElementById('snapEdge').checked) {
+        const edge = getClosestEdge(x, y);
+        if (edge.dist < 1.2) {
+            finalX = edge.pt.x;
+            finalY = edge.pt.y;
+            angle = edge.angle;
+        }
+    }
+    weights.push({ id: nextId++, type, mass, x: finalX, y: finalY, angle });
+    recalcPhysics();
+}
+
+function addWeightCenter(type) {
+    const offset = (weights.length % 2 === 0 ? -1 : 1) * 7.5;
+    addWeight(type, offset, 1.2);
+}
+
+function clearWeights() {
+    weights = [];
+    document.getElementById('presetSelect').value = '';
+    recalcPhysics();
+}
+
+function loadPreset(key) {
+    weights = [];
+    if (key === 'exp1') {
+        addWeight('paperclip', -9.9, 1.8);
+        addWeight('paperclip', 9.9, 1.8);
+    } else if (key === 'exp2') {
+        addWeight('binder', -8.8, 0.9);
+        addWeight('binder', 8.8, 0.9);
+    } else if (key === 'exp3') {
+        addWeight('binder', -7.2, 4.6);
+        addWeight('binder', 7.2, 4.6);
+        addWeight('paperclip', -4.5, 6.2);
+        addWeight('paperclip', 4.5, 6.2);
+    } else if (key === 'exp6') {
+        addWeight('binder', -8.8, 1.0);
+    }
+    recalcPhysics();
+}
+
+function recalcPhysics() {
+    let totalMass = BIRD_MASS;
+    let sumMX = BIRD_MASS * BIRD_COM.x;
+    let sumMY = BIRD_MASS * BIRD_COM.y;
+    let sumMZ = BIRD_MASS * (-0.8);
+    let torqueLR = 0;
+
+    weights.forEach(w => {
+        totalMass += w.mass;
+        sumMX += w.mass * w.x;
+        sumMY += w.mass * w.y;
+        const wingDroopZ = -0.5 - Math.abs(w.x) * 0.35;
+        sumMZ += w.mass * wingDroopZ;
+        torqueLR += w.mass * w.x;
+    });
+
+    const comX = sumMX / totalMass;
+    const comY = sumMY / totalMass;
+    const comZ = sumMZ / totalMass;
+
+    physics.comX = comX;
+    physics.comY = comY;
+    physics.comZ = comZ;
+    physics.totalMass = totalMass;
+    physics.torqueLR = torqueLR;
+
+    const effectiveDepth = Math.abs(comZ);
+    const maxAngle = 0.85;
+    let targetRoll = Math.atan2(comX, effectiveDepth);
+    let targetPitch = Math.atan2(-comY, effectiveDepth);
+
+    let isStable = true;
+    let failReason = "";
+
+    if (comY > 2.2) {
+        isStable = false;
+        failReason = "重心太靠後方（鳥嘴前方重量不足），平衡鳥向後翻落！";
+        targetPitch = -1.35;
+    } else if (comY < -2.5) {
+        isStable = false;
+        failReason = "重心太靠前方，平衡鳥向前栽倒！";
+        targetPitch = 1.35;
+    } else if (Math.abs(targetRoll) > maxAngle) {
+        isStable = false;
+        failReason = comX < 0 ? "左側力矩過大，向左側翻落！" : "右側力矩過大，向右側翻落！";
+        targetRoll = comX < 0 ? -1.35 : 1.35;
+    }
+
+    physics.isStable = isStable;
+    physics.targetRoll = targetRoll;
+    physics.targetPitch = targetPitch;
+
+    updateUI(isStable, failReason);
+}
+
+function updateUI(isStable, failReason) {
+    document.getElementById('itemCount').innerText = `目前夾子數：${weights.length} 個`;
+    document.getElementById('metricMass').innerText = `${physics.totalMass.toFixed(1)} g`;
+
+    const lrVal = physics.torqueLR;
+    document.getElementById('metricLR').innerText = Math.abs(lrVal) < 0.2
+        ? "0.0 g·cm (完美對稱)"
+        : `${Math.abs(lrVal).toFixed(1)} g·cm (${lrVal < 0 ? '偏左' : '偏右'})`;
+
+    const fbVal = physics.comY;
+    document.getElementById('metricFB').innerText = Math.abs(fbVal) < 0.15
+        ? "0.0 cm (正對支點)"
+        : `${fbVal > 0 ? '後方' : '前方'} ${Math.abs(fbVal).toFixed(1)} cm`;
+
+    const banner = document.getElementById('statusBanner');
+    const postureEl = document.getElementById('metricPosture');
+
+    if (!isStable) {
+        banner.className = "status-banner status-fail";
+        banner.innerText = `❌ 失衡：${failReason}`;
+        postureEl.innerText = "無法平衡 (掉落)";
+        postureEl.style.color = "var(--danger)";
+    } else {
+        let tailState = "水平平衡";
+        if (physics.targetPitch > 0.12) tailState = "成功平衡（尾巴朝上 ↗）";
+        else if (physics.targetPitch < -0.12) tailState = "成功平衡（尾巴朝下 ↘）";
+        else tailState = "成功平衡（水平展翅 ➡）";
+
+        const tiltNote = Math.abs(physics.targetRoll) > 0.12 ? `，微向${physics.targetRoll < 0 ? '左' : '右'}傾斜` : "";
+        banner.className = Math.abs(physics.targetRoll) > 0.15 ? "status-banner status-tilt" : "status-banner status-ok";
+        banner.innerText = `✅ ${tailState}${tiltNote}`;
+        postureEl.innerText = tailState;
+        postureEl.style.color = "var(--success)";
+    }
+}
+
+function drawTopView() {
+    topCtx.clearRect(0, 0, topCanvas.width, topCanvas.height);
+
+    topCtx.strokeStyle = '#f1f5f9';
+    topCtx.lineWidth = 1;
+    for (let x = -10; x <= 10; x += 2) {
+        const px = ORIGIN_X + x * SCALE;
+        topCtx.beginPath(); topCtx.moveTo(px, 0); topCtx.lineTo(px, topCanvas.height); topCtx.stroke();
+    }
+    for (let y = -2; y <= 16; y += 2) {
+        const py = ORIGIN_Y + y * SCALE;
+        topCtx.beginPath(); topCtx.moveTo(0, py); topCtx.lineTo(topCanvas.width, py); topCtx.stroke();
+    }
+
+    topCtx.save();
+    topCtx.setLineDash([5, 5]);
+    topCtx.strokeStyle = '#cbd5e1';
+    topCtx.beginPath(); topCtx.moveTo(ORIGIN_X, 15); topCtx.lineTo(ORIGIN_X, topCanvas.height - 15); topCtx.stroke();
+    topCtx.strokeStyle = '#fca5a5';
+    topCtx.beginPath(); topCtx.moveTo(30, ORIGIN_Y); topCtx.lineTo(topCanvas.width - 30, ORIGIN_Y); topCtx.stroke();
+    topCtx.restore();
+
+    topCtx.save();
+    topCtx.fillStyle = '#e0f2fe';
+    topCtx.strokeStyle = '#0284c7';
+    topCtx.lineWidth = 2.5;
+    topCtx.lineJoin = 'round';
+    topCtx.beginPath();
+    birdPolygon.forEach((pt, idx) => {
+        const p = cmToPx(pt.x, pt.y);
+        if (idx === 0) topCtx.moveTo(p.x, p.y);
+        else topCtx.lineTo(p.x, p.y);
+    });
+    topCtx.closePath();
+    topCtx.fill();
+    topCtx.stroke();
+    topCtx.restore();
+
+    const pivotPx = cmToPx(0, 0);
+    topCtx.fillStyle = '#ef4444';
+    topCtx.beginPath(); topCtx.arc(pivotPx.x, pivotPx.y, 6, 0, Math.PI * 2); topCtx.fill();
+    topCtx.fillStyle = '#b91c1c';
+    topCtx.font = 'bold 12px sans-serif';
+    topCtx.fillText('支點 (0,0)', pivotPx.x + 10, pivotPx.y - 6);
+
+    weights.forEach(w => {
+        const p = cmToPx(w.x, w.y);
+        topCtx.save();
+        topCtx.translate(p.x, p.y);
+        topCtx.rotate(w.angle);
+        if (w.type === 'paperclip') {
+            topCtx.strokeStyle = '#475569';
+            topCtx.lineWidth = 2.5;
+            topCtx.fillStyle = 'rgba(255,255,255,0.85)';
+            topCtx.beginPath(); topCtx.roundRect(-12, -5, 24, 10, 5); topCtx.fill(); topCtx.stroke();
+            topCtx.beginPath(); topCtx.roundRect(-7, -2.5, 14, 5, 2.5); topCtx.stroke();
+        } else {
+            topCtx.fillStyle = '#1e293b';
+            topCtx.beginPath(); topCtx.roundRect(-11, -9, 22, 18, 3); topCtx.fill();
+            topCtx.strokeStyle = '#94a3b8';
+            topCtx.lineWidth = 2;
+            topCtx.strokeRect(-7, -15, 14, 6);
+        }
+        topCtx.restore();
+
+        if (draggingItem && draggingItem.id === w.id) {
+            topCtx.fillStyle = '#0f172a';
+            topCtx.font = 'bold 11px sans-serif';
+            topCtx.fillText(`力臂: ${Math.abs(w.x).toFixed(1)}cm`, p.x + 14, p.y + 4);
+        }
+    });
+
+    const comPx = cmToPx(physics.comX, physics.comY);
+    topCtx.save();
+    topCtx.translate(comPx.x, comPx.y);
+    topCtx.strokeStyle = physics.isStable ? '#16a34a' : '#d97706';
+    topCtx.fillStyle = physics.isStable ? '#22c55e' : '#f59e0b';
+    topCtx.lineWidth = 2.5;
+    topCtx.beginPath(); topCtx.arc(0, 0, 7, 0, Math.PI * 2); topCtx.fill();
+    topCtx.beginPath(); topCtx.moveTo(-12, 0); topCtx.lineTo(12, 0); topCtx.moveTo(0, -12); topCtx.lineTo(0, 12); topCtx.stroke();
+    topCtx.fillStyle = '#0f172a';
+    topCtx.font = 'bold 12px sans-serif';
+    topCtx.fillText('總重心', 12, 4);
+    topCtx.restore();
+}
+
+function drawSimView() {
+    simCtx.clearRect(0, 0, simCanvas.width, simCanvas.height);
+
+    const k = 0.08, damping = 0.88;
+    physics.rollVel = (physics.rollVel + (physics.targetRoll - physics.roll) * k) * damping;
+    physics.roll += physics.rollVel;
+    physics.pitchVel = (physics.pitchVel + (physics.targetPitch - physics.pitch) * k) * damping;
+    physics.pitch += physics.pitchVel;
+
+    const cx = simCanvas.width / 2;
+    const cy = 120;
+
+    simCtx.fillStyle = '#cbd5e1';
+    simCtx.beginPath();
+    simCtx.moveTo(cx - 45, 280);
+    simCtx.lineTo(cx + 45, 280);
+    simCtx.lineTo(cx + 8, cy + 4);
+    simCtx.lineTo(cx - 8, cy + 4);
+    simCtx.closePath();
+    simCtx.fill();
+
+    simCtx.fillStyle = '#ef4444';
+    simCtx.beginPath(); simCtx.arc(cx, cy, 5, 0, Math.PI * 2); simCtx.fill();
+
+    simCtx.save();
+    simCtx.translate(cx, cy);
+
+    if (viewMode === 'front') {
+        simCtx.rotate(physics.roll);
+        simCtx.strokeStyle = '#0284c7';
+        simCtx.fillStyle = '#bae6fd';
+        simCtx.lineWidth = 4;
+        simCtx.beginPath();
+        simCtx.moveTo(-165, 55);
+        simCtx.quadraticCurveTo(-80, 5, 0, 0);
+        simCtx.quadraticCurveTo(80, 5, 165, 55);
+        simCtx.stroke();
+
+        simCtx.fillStyle = '#38bdf8';
+        simCtx.beginPath(); simCtx.arc(0, 8, 14, 0, Math.PI * 2); simCtx.fill(); simCtx.stroke();
+
+        weights.forEach(w => {
+            const wx = w.x * 16;
+            const wy = Math.pow(Math.abs(w.x) / 10, 1.6) * 55;
+            simCtx.fillStyle = w.type === 'paperclip' ? '#64748b' : '#1e293b';
+            simCtx.fillRect(wx - 6, wy - 3, 12, w.type === 'paperclip' ? 12 : 16);
+        });
+
+        const gx = physics.comX * 16;
+        const gz = -physics.comZ * 16;
+        simCtx.fillStyle = '#16a34a';
+        simCtx.beginPath(); simCtx.arc(gx, gz, 6, 0, Math.PI * 2); simCtx.fill();
+        simCtx.fillStyle = '#15803d';
+        simCtx.font = '12px sans-serif';
+        simCtx.fillText('總重心', gx + 10, gz + 4);
+    } else {
+        simCtx.rotate(-physics.pitch);
+        simCtx.fillStyle = '#e0f2fe';
+        simCtx.strokeStyle = '#0284c7';
+        simCtx.lineWidth = 3;
+        simCtx.beginPath();
+        simCtx.moveTo(0, 0);
+        simCtx.lineTo(45, -12);
+        simCtx.lineTo(130, -8);
+        simCtx.lineTo(195, -35);
+        simCtx.lineTo(165, 8);
+        simCtx.lineTo(55, 16);
+        simCtx.closePath();
+        simCtx.fill(); simCtx.stroke();
+
+        simCtx.fillStyle = 'rgba(56, 189, 248, 0.45)';
+        simCtx.beginPath();
+        simCtx.moveTo(25, 2);
+        simCtx.quadraticCurveTo(60, 58, 105, 42);
+        simCtx.lineTo(85, 6);
+        simCtx.closePath();
+        simCtx.fill(); simCtx.stroke();
+
+        weights.forEach(w => {
+            const wy = w.y * 14;
+            const wz = 15 + Math.abs(w.x) * 3.2;
+            simCtx.fillStyle = w.type === 'paperclip' ? '#64748b' : '#1e293b';
+            simCtx.fillRect(wy - 7, wz - 5, 14, w.type === 'paperclip' ? 8 : 12);
+        });
+
+        const gy = physics.comY * 14;
+        const gz = -physics.comZ * 14;
+        simCtx.fillStyle = '#16a34a';
+        simCtx.beginPath(); simCtx.arc(gy, gz, 6, 0, Math.PI * 2); simCtx.fill();
+        simCtx.fillStyle = '#15803d';
+        simCtx.font = '12px sans-serif';
+        simCtx.fillText('總重心', gy + 10, gz + 4);
+    }
+    simCtx.restore();
+
+    simCtx.save();
+    simCtx.setLineDash([4, 4]);
+    simCtx.strokeStyle = '#94a3b8';
+    simCtx.beginPath(); simCtx.moveTo(cx, cy); simCtx.lineTo(cx, 275); simCtx.stroke();
+    simCtx.restore();
+}
+
+function setView(mode) {
+    viewMode = mode;
+    document.getElementById('btnFront').classList.toggle('active', mode === 'front');
+    document.getElementById('btnSide').classList.toggle('active', mode === 'side');
+}
+
+function nudgeBird() {
+    physics.rollVel += (Math.random() > 0.5 ? 1 : -1) * 0.14;
+    physics.pitchVel += (Math.random() > 0.5 ? 1 : -1) * 0.12;
+}
+
+// 拖放事件
+['tool-paperclip', 'tool-binder'].forEach(id => {
+    document.getElementById(id).addEventListener('dragstart', e => {
+        e.dataTransfer.setData('type', id === 'tool-paperclip' ? 'paperclip' : 'binder');
+    });
+});
+topCanvas.addEventListener('dragover', e => e.preventDefault());
+topCanvas.addEventListener('drop', e => {
+    e.preventDefault();
+    const type = e.dataTransfer.getData('type');
+    if (!type) return;
+    const rect = topCanvas.getBoundingClientRect();
+    const cm = pxToCm((e.clientX - rect.left) * (topCanvas.width / rect.width), (e.clientY - rect.top) * (topCanvas.height / rect.height));
+    addWeight(type, cm.x, cm.y);
+});
+
+function getPointerCm(e) {
+    const rect = topCanvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return pxToCm((clientX - rect.left) * (topCanvas.width / rect.width), (clientY - rect.top) * (topCanvas.height / rect.height));
+}
+
+function onPointerDown(e) {
+    const cm = getPointerCm(e);
+    for (let i = weights.length - 1; i >= 0; i--) {
+        if (Math.hypot(cm.x - weights[i].x, cm.y - weights[i].y) < 1.1) {
+            draggingItem = weights[i];
+            topCanvas.style.cursor = 'grabbing';
+            return;
+        }
+    }
+}
+function onPointerMove(e) {
+    if (!draggingItem) return;
+    e.preventDefault();
+    const cm = getPointerCm(e);
+    let nx = cm.x, ny = cm.y;
+    if (document.getElementById('snapEdge').checked) {
+        const edge = getClosestEdge(nx, ny);
+        if (edge.dist < 1.0) {
+            nx = edge.pt.x; ny = edge.pt.y; draggingItem.angle = edge.angle;
+        } else {
+            draggingItem.angle = 0;
+        }
+    }
+    draggingItem.x = nx; draggingItem.y = ny;
+    recalcPhysics();
+}
+function onPointerUp() {
+    if (!draggingItem) return;
+    const edge = getClosestEdge(draggingItem.x, draggingItem.y);
+    if (!isPointInBird(draggingItem.x, draggingItem.y) && edge.dist > 2.2) {
+        weights = weights.filter(w => w.id !== draggingItem.id);
+        recalcPhysics();
+    }
+    draggingItem = null;
+    topCanvas.style.cursor = 'default';
+}
+
+topCanvas.addEventListener('mousedown', onPointerDown);
+window.addEventListener('mousemove', onPointerMove);
+window.addEventListener('mouseup', onPointerUp);
+topCanvas.addEventListener('touchstart', onPointerDown, {passive: false});
+window.addEventListener('touchmove', onPointerMove, {passive: false});
+window.addEventListener('touchend', onPointerUp);
+
+topCanvas.addEventListener('dblclick', e => {
+    const cm = getPointerCm(e);
+    for (let i = weights.length - 1; i >= 0; i--) {
+        if (Math.hypot(cm.x - weights[i].x, cm.y - weights[i].y) < 1.2) {
+            weights.splice(i, 1);
+            recalcPhysics();
+            return;
+        }
+    }
+});
+simCanvas.addEventListener('click', nudgeBird);
+
+// 檢查選擇題答案
+function checkMultipleChoice() {
+    const q1 = document.querySelector('input[name="q1"]:checked');
+    const fb1 = document.getElementById('fb-q1');
+    fb1.style.display = 'block';
+    if (!q1) {
+        fb1.style.background = '#fef3c7'; fb1.style.color = '#92400e';
+        fb1.innerText = '⚠️ 請先選擇第 1 題的答案！';
+    } else if (q1.value === 'B') {
+        fb1.style.background = '#dcfce7'; fb1.style.color = '#166534';
+        fb1.innerText = '✅ 答對了！鳥嘴尖端是支撐整隻鳥並作為轉動中心的「支點」。';
+    } else {
+        fb1.style.background = '#fee2e2'; fb1.style.color = '#991b1b';
+        fb1.innerText = '❌ 再想想看！整隻鳥頂在手指上的那個尖端是轉動的中心，稱為「支點 (B)」。';
+    }
+
+    const q2 = document.querySelector('input[name="q2"]:checked');
+    const fb2 = document.getElementById('fb-q2');
+    fb2.style.display = 'block';
+    if (!q2) {
+        fb2.style.background = '#fef3c7'; fb2.style.color = '#92400e';
+        fb2.innerText = '⚠️ 請先選擇第 2 題的答案！';
+    } else if (q2.value === 'C') {
+        fb2.style.background = '#dcfce7'; fb2.style.color = '#166534';
+        fb2.innerText = '✅ 太棒了！左力矩 = 3g × 4cm = 12 g·cm；右力矩 = 2g × 6cm = 12 g·cm，兩邊力矩相等達成平衡！';
+    } else {
+        fb2.style.background = '#fee2e2'; fb2.style.color = '#991b1b';
+        fb2.innerText = '❌ 再算算看！左側力矩是 3g × 4cm = 12，右側必須讓「重量 × 距離」也等於 12（選項 C：2g × 6cm = 12）。';
+    }
+}
+
+// 語音口述輸入 (Web Speech API)
+let activeRecognition = null;
+function toggleVoice(textareaId, btn) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert('您的瀏覽器不支援語音辨識功能，請使用最新版 Chrome 或 Edge 瀏覽器，或直接打字輸入。');
+        return;
+    }
+    if (activeRecognition) {
+        activeRecognition.stop();
+        activeRecognition = null;
+        return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'zh-TW';
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    recognition.onstart = () => {
+        activeRecognition = recognition;
+        btn.classList.add('recording');
+        btn.innerText = '⏹️ 正在聆聽...（點擊停止）';
+    };
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const ta = document.getElementById(textareaId);
+        ta.value = (ta.value ? ta.value + ' ' : '') + transcript;
+    };
+    recognition.onerror = (e) => {
+        alert('語音辨識發生錯誤或未授權麥克風：' + e.error);
+    };
+    recognition.onend = () => {
+        activeRecognition = null;
+        btn.classList.remove('recording');
+        btn.innerText = '🎤 語音口述輸入';
+    };
+    recognition.start();
+}
+
+// 匯出完整圖文 HTML 學習單報告（包含六次截圖）
+function exportHtmlReport() {
+    const name = document.getElementById('studentName').value.trim() || '未填寫姓名';
+    const date = document.getElementById('expDate').value || '';
+    const q1 = document.querySelector('input[name="q1"]:checked')?.value || '未作答';
+    const q2 = document.querySelector('input[name="q2"]:checked')?.value || '未作答';
+    const q3 = document.getElementById('q3').value.trim() || '（未填寫）';
+    const q4 = document.getElementById('q4').value.trim() || '（未填寫）';
+    const q5 = document.getElementById('q5').value.trim() || '（未填寫）';
+    const chineseNums = ['一', '二', '三', '四', '五', '六'];
+
+    const trialsHtml = trialsData.map((t, i) => `
+        <div style="border:1px solid #94a3b8; border-radius:8px; padding:10px; background:#fff;">
+            <div style="font-weight:bold; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-bottom:6px;">
+                第${chineseNums[i]}次嘗試｜使用：${t.itemsDesc || '未填寫'}
+            </div>
+            <div style="height:140px; display:flex; align-items:center; justify-content:center; background:#f8fafc; border:1px dashed #cbd5e1; margin-bottom:6px;">
+                ${t.screenshot ? `<img src="${t.screenshot}" style="max-width:100%; max-height:100%;">` : '<span style="color:#94a3b8;">（無截圖）</span>'}
+            </div>
+            <div style="font-size:13px;"><strong>狀態：</strong>${t.status}</div>
+            ${t.note ? `<div style="font-size:12px; color:#475569; margin-top:2px;"><strong>補充：</strong>${t.note}</div>` : ''}
+        </div>
+    `).join('');
+
+    const reportHtml = `<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>平衡鳥實驗學習單_${name}</title>
+<style>
+    body { font-family: "Microsoft JhengHei", sans-serif; padding: 24px; color: #1e293b; max-width: 900px; margin: auto; }
+    h1 { text-align: center; font-size: 22px; margin-bottom: 6px; }
+    .meta { display: flex; justify-content: space-between; border-bottom: 2px solid #1e293b; padding-bottom: 8px; margin-bottom: 16px; font-weight: bold; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .q-box { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #f8fafc; }
+    .q-title { font-weight: bold; margin-bottom: 6px; color: #0f172a; }
+    .ans { background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; white-space: pre-wrap; }
+    @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+    <h1>縣立興隆國民小學 資優班學習單：數理實作第一週—平衡鳥實驗</h1>
+    <div class="meta">
+        <span>學生姓名：${name}</span>
+        <span>日期：${date}</span>
+    </div>
+    <h3>一、六次嘗試實驗紀錄與圖示</h3>
+    <div class="grid">${trialsHtml}</div>
+    <h3>二、物理原理思考與口述回答</h3>
+    <div class="q-box">
+        <div class="q-title">1. 【選擇題】鳥嘴立於支點（手指）上時，鳥嘴扮演什麼角色？（正解：B）</div>
+        <div class="ans">學生作答：${q1} ${q1 === 'B' ? '（正確）' : ''}</div>
+    </div>
+    <div class="q-box">
+        <div class="q-title">2. 【選擇題】左翼 3g×4cm，右翼 1g 迴紋針如何配置才能左右平衡？（正解：C）</div>
+        <div class="ans">學生作答：${q2} ${q2 === 'C' ? '（正確）' : ''}</div>
+    </div>
+    <div class="q-box">
+        <div class="q-title">3. 【原理口述】為什麼加上迴紋針或長尾夾後，平衡鳥就能保持平衡？</div>
+        <div class="ans">${q3}</div>
+    </div>
+    <div class="q-box">
+        <div class="q-title">4. 【觀察比較】為什麼有時候尾巴朝上，有時候尾巴朝下？</div>
+        <div class="ans">${q4}</div>
+    </div>
+    <div class="q-box">
+        <div class="q-title">5. 【進階思考】輕撥平衡鳥讓它搖晃或旋轉時，為什麼不會掉落且能回到平衡？</div>
+        <div class="ans">${q5}</div>
+    </div>
+</body>
+</html>`;
+
+    const blob = new Blob([reportHtml], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `平衡鳥學習單_${name}_${date}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// 一鍵開啟預設郵件軟體寄送文字摘要給老師
+function sendEmailToTeacher() {
+    const name = document.getElementById('studentName').value.trim() || '未填寫姓名';
+    const date = document.getElementById('expDate').value || '';
+    const teacherEmail = document.getElementById('teacherEmail').value.trim();
+    const q1 = document.querySelector('input[name="q1"]:checked')?.value || '未作答';
+    const q2 = document.querySelector('input[name="q2"]:checked')?.value || '未作答';
+    const q3 = document.getElementById('q3').value.trim() || '（未填寫）';
+    const q4 = document.getElementById('q4').value.trim() || '（未填寫）';
+    const q5 = document.getElementById('q5').value.trim() || '（未填寫）';
+    const chineseNums = ['一', '二', '三', '四', '五', '六'];
+
+    const trialsText = trialsData.map((t, i) =>
+        `第${chineseNums[i]}次嘗試：使用【${t.itemsDesc || '未填'}】｜狀態：【${t.status}】${t.note ? '｜補充：' + t.note : ''}`
+    ).join('\n');
+
+    const subject = encodeURIComponent(`【平衡鳥互動學習單繳交】${name} (${date})`);
+    const body = encodeURIComponent(
+`老師您好：
+這是我的「平衡鳥實驗互動學習單」作答紀錄：
+
+【基本資料】
+姓名：${name}
+日期：${date}
+
+【一、六次嘗試紀錄】
+${trialsText}
+
+【二、原理思考與口述題】
+1. 鳥嘴扮演的角色（選擇題，正解B）：${q1}
+2. 左右力矩平衡計算（選擇題，正解C）：${q2}
+3. 平衡鳥保持平衡的原理說明：
+${q3}
+
+4. 尾巴朝上與朝下的原因分析：
+${q4}
+
+5. 搖晃或旋轉時能恢復平衡的原因：
+${q5}
+
+（※ 若需檢視六次實驗截圖，請見我一併夾帶的學習單 HTML 檔案！）`
+    );
+
+    window.location.href = `mailto:${teacherEmail}?subject=${subject}&body=${body}`;
+}
+
+// 預設狀態
+recalcPhysics();
+function animate() {
+    drawTopView();
+    drawSimView();
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
